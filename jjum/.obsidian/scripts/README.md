@@ -287,11 +287,153 @@ node glossary-builder.js build
 - `.env` 파일은 Git에 커밋되지 않도록 `.gitignore`에 추가됨
 - GitHub API 토큰은 안전하게 `.env`에 저장됨
 
+## 🚀 Phase 4: 고급 기능 (2025-10-21)
+
+Phase 4에서는 시스템의 지능성과 유연성을 대폭 향상시킨 고급 기능들을 추가했습니다.
+
+### ✨ Glossary Builder 고도화
+
+**1. Synonym 지원**
+- 용어집에 동의어 추가 (`synonyms`, `synonym`, `aka` frontmatter 필드)
+- 동의어를 통한 검색 및 링킹 지원
+
+**2. Priority Scoring**
+- 자동 우선순위 점수 계산
+  - Related concepts (연결성): 개당 +2점
+  - Tags (분류): 개당 +1점
+  - Content length (내용 충실도): 최대 +5점
+  - References (참조): 개당 +1점
+  - Importance flag: +10점
+  - Explicit priority: 10배 가중치
+
+**3. Advanced Search**
+```bash
+node glossary-builder.js advanced-search "react"
+```
+- Relevance scoring (관련도 점수)
+- 정확한 매칭, 부분 매칭, 태그 매칭 등 다층적 점수 계산
+- Priority boost 적용
+
+**4. Related Terms Discovery**
+```bash
+node glossary-builder.js related "react"
+```
+- 명시적 연결 (explicit links)
+- 공유 태그 기반 연관성 (shared tags)
+- 유사도 점수 계산
+
+### 🎯 Filing Rules 강화
+
+**1. Content-based Matching**
+```json
+{
+  "conditions": {
+    "content_keywords": ["typescript", "interface"],
+    "content_patterns": ["step \\d+", "tutorial"]
+  }
+}
+```
+- `content_keywords`: 본문 내용에서 키워드 검색 (10점/키워드)
+- `content_patterns`: 정규식 패턴 매칭 (15점/패턴)
+
+**2. Scoring System**
+- Source match: 50점
+- Tag match: 30점/태그
+- Keyword match: 20점/키워드
+- Content pattern: 15점/패턴
+- Content keyword: 10점/키워드
+- Path pattern: 25점
+- Frontmatter field: 40점/필드
+
+**3. Conflict Resolution**
+- 여러 규칙이 매칭될 때 점수로 자동 선택
+- 동점일 경우 priority 값으로 결정
+- Alternatives 제공 (대안 규칙 표시)
+- Confidence level (high/medium/low)
+
+**예제: 새로운 Filing Rules**
+```json
+{
+  "id": "rule-005",
+  "name": "TypeScript Content",
+  "conditions": {
+    "content_keywords": ["typescript", "type safety"],
+    "any": true
+  },
+  "destination": "3_Resources/TypeScript"
+}
+```
+
+### 📊 File Watcher 향상
+
+**1. Enhanced Metadata Extraction**
+- File size 추적
+- Word count 자동 계산
+- Created/Modified time 기록
+- Frontmatter에서 title, source 추출
+
+**2. Advanced File Type Detection**
+- `git-commit`: Git 커밋 문서
+- `web-clip`: 웹 클리퍼 문서
+- `tutorial`: 튜토리얼/가이드
+- `code-example`: 코드 예제
+- `reference`: API 문서/레퍼런스
+- `article`: 긴 글 (500+ 단어)
+- `quick-note`: 짧은 메모 (<100 단어)
+- `document`: 일반 문서
+
+**3. Comprehensive Statistics**
+```bash
+node file-watcher.js stats
+```
+- Uptime tracking (가동 시간)
+- Files by type breakdown
+- Files by source breakdown
+- Error tracking
+- Processing metrics
+
+**통계 예시:**
+```json
+{
+  "uptime_readable": "2h 15m",
+  "files_added": 42,
+  "files_queued": 40,
+  "by_type": {
+    "article": 15,
+    "tutorial": 8,
+    "quick-note": 12
+  },
+  "by_source": {
+    "inbox-file": 30,
+    "web-clipper": 10
+  }
+}
+```
+
+### 🧪 테스트
+
+Phase 4 기능 테스트 실행:
+```bash
+node .obsidian/scripts/test-phase4.js
+```
+
+테스트 범위:
+- ✅ Glossary advanced search
+- ✅ Related terms discovery
+- ✅ Priority sorting
+- ✅ Content-based filing rules
+- ✅ Pattern-based matching
+- ✅ Conflict resolution
+- ✅ File type detection
+- ✅ Statistics tracking
+
 ## 📈 성능 최적화
 
 - Glossary Index는 사전 빌드되어 빠른 검색 제공
 - Work Queue는 우선순위 기반 정렬
 - File Watcher는 파일 안정화 후 처리 (2초 대기)
+- Phase 4: Scoring 시스템으로 정확도 향상
+- Phase 4: Relevance ranking으로 검색 품질 개선
 
 ## 🤝 기여
 
@@ -309,5 +451,5 @@ node glossary-builder.js build
 
 ---
 
-**버전**: 1.0.0
+**버전**: 1.1.0 (Phase 4 완료)
 **최종 업데이트**: 2025-10-21

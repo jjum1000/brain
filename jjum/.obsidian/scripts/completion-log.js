@@ -35,7 +35,7 @@ class CompletionLog {
   /**
    * Add completed processing record
    */
-  async add(processingRecord, finalOutput) {
+  async add(processingRecord, finalOutput = {}) {
     const log = await this.load();
 
     const completedRecord = {

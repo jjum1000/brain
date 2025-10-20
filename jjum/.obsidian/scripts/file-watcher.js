@@ -9,12 +9,25 @@ class FileWatcher {
     this.queueManager = new WorkQueueManager(this.vaultPath);
     this.watcher = null;
     this.processedFiles = new Set();
+
+    // Phase 4: Enhanced statistics tracking
+    this.stats = {
+      files_added: 0,
+      files_modified: 0,
+      files_deleted: 0,
+      files_queued: 0,
+      errors: 0,
+      started_at: null,
+      by_type: {},
+      by_source: {}
+    };
   }
 
   /**
    * Start watching the inbox directory
    */
   async start() {
+    this.stats.started_at = new Date().toISOString();
     console.log('👁️  File Watcher Started');
     console.log(`   Watching: ${this.inboxPath}\n`);
 
@@ -75,20 +88,31 @@ class FileWatcher {
     const relativePath = path.relative(this.vaultPath, filePath);
 
     console.log(`📄 New file detected: ${relativePath}`);
+    this.stats.files_added++;
 
     try {
-      // Detect metadata from file path and name
-      const metadata = this.detectMetadata(filePath);
+      // Phase 4: Enhanced metadata detection with file type
+      const metadata = await this.detectMetadata(filePath);
+      const fileType = this.detectFileType(filePath, metadata);
+
+      metadata.file_type = fileType;
+
+      // Update stats
+      this.stats.by_type[fileType] = (this.stats.by_type[fileType] || 0) + 1;
+      this.stats.by_source[metadata.source] = (this.stats.by_source[metadata.source] || 0) + 1;
 
       // Add to work queue
       const workId = await this.queueManager.addToQueue(relativePath, metadata);
 
       if (workId) {
         this.processedFiles.add(filePath);
-        console.log(`   ✅ Added to work queue (ID: ${workId})\n`);
+        this.stats.files_queued++;
+        console.log(`   ✅ Added to work queue (ID: ${workId})`);
+        console.log(`   📊 Type: ${fileType}, Source: ${metadata.source}\n`);
       }
 
     } catch (error) {
+      this.stats.errors++;
       console.error(`   ❌ Failed to add to queue: ${error.message}\n`);
     }
   }
@@ -151,19 +175,51 @@ class FileWatcher {
   }
 
   /**
-   * Detect metadata from file path and name
+   * Detect metadata from file path and name (Enhanced in Phase 4)
    */
-  detectMetadata(filePath) {
+  async detectMetadata(filePath) {
+    const fs = require('fs');
+    const matter = require('gray-matter');
+
     const fileName = path.basename(filePath, '.md');
     const relativePath = path.relative(this.vaultPath, filePath);
 
     const metadata = {
-      detected_at: new Date().toISOString()
+      detected_at: new Date().toISOString(),
+      file_size: 0,
+      word_count: 0
     };
+
+    // Phase 4: Read file stats and basic content
+    try {
+      const stats = fs.statSync(filePath);
+      metadata.file_size = stats.size;
+      metadata.created_time = stats.birthtime.toISOString();
+      metadata.modified_time = stats.mtime.toISOString();
+
+      // Read content for analysis
+      const content = fs.readFileSync(filePath, 'utf-8');
+      const { data: frontmatter, content: body } = matter(content);
+
+      metadata.word_count = body.split(/\s+/).filter(w => w.length > 0).length;
+
+      // Extract title from frontmatter if available
+      if (frontmatter.title) {
+        metadata.title = frontmatter.title;
+      }
+
+      // Extract source from frontmatter if available
+      if (frontmatter.source) {
+        metadata.source = frontmatter.source;
+      }
+    } catch (error) {
+      // File may not be fully written yet
+      console.log(`   ⚠️  Could not read file metadata: ${error.message}`);
+    }
 
     // Detect if from git-imports subfolder
     if (relativePath.includes('git-imports')) {
-      metadata.source = 'git-commit';
+      metadata.source = metadata.source || 'git-commit';
 
       // Try to extract commit hash from filename (format: hash-filename.md)
       const match = fileName.match(/^([a-f0-9]{7,40})-(.+)$/);
@@ -174,8 +230,13 @@ class FileWatcher {
     }
 
     // Detect web clipper patterns
-    if (fileName.includes('http') || fileName.includes('www')) {
-      metadata.source = 'web-clipper';
+    if (fileName.includes('http') || fileName.includes('www') || fileName.includes('clip')) {
+      metadata.source = metadata.source || 'web-clipper';
+    }
+
+    // Detect if it's a note/reference
+    if (fileName.includes('note') || fileName.includes('reference')) {
+      metadata.source = metadata.source || 'note';
     }
 
     // Default source if not detected
@@ -187,15 +248,101 @@ class FileWatcher {
   }
 
   /**
-   * Get watcher statistics
+   * Detect file type based on various signals (Phase 4)
+   */
+  detectFileType(filePath, metadata) {
+    const fileName = path.basename(filePath, '.md').toLowerCase();
+
+    // Git commit
+    if (metadata.source === 'git-commit' || metadata.commit_hash) {
+      return 'git-commit';
+    }
+
+    // Web clip
+    if (metadata.source === 'web-clipper') {
+      return 'web-clip';
+    }
+
+    // Tutorial/Guide (based on filename)
+    if (fileName.includes('tutorial') || fileName.includes('guide') || fileName.includes('how-to')) {
+      return 'tutorial';
+    }
+
+    // Code snippet/example
+    if (fileName.includes('example') || fileName.includes('snippet') || fileName.includes('code')) {
+      return 'code-example';
+    }
+
+    // Reference/Documentation
+    if (fileName.includes('reference') || fileName.includes('doc') || fileName.includes('api')) {
+      return 'reference';
+    }
+
+    // Note
+    if (fileName.includes('note')) {
+      return 'note';
+    }
+
+    // Article (longer content)
+    if (metadata.word_count > 500) {
+      return 'article';
+    }
+
+    // Short note (brief content)
+    if (metadata.word_count < 100) {
+      return 'quick-note';
+    }
+
+    return 'document';
+  }
+
+  /**
+   * Get watcher statistics (Enhanced in Phase 4)
    */
   async getStats() {
+    const uptime = this.stats.started_at
+      ? Date.now() - new Date(this.stats.started_at).getTime()
+      : 0;
+
     return {
       watching: this.inboxPath,
       is_running: this.watcher !== null,
+      started_at: this.stats.started_at,
+      uptime_ms: uptime,
+      uptime_readable: this.formatUptime(uptime),
+
+      // File statistics
       processed_files: this.processedFiles.size,
+      files_added: this.stats.files_added,
+      files_modified: this.stats.files_modified,
+      files_deleted: this.stats.files_deleted,
+      files_queued: this.stats.files_queued,
+      errors: this.stats.errors,
+
+      // Breakdown by type and source
+      by_type: this.stats.by_type,
+      by_source: this.stats.by_source,
+
+      // Queue stats
       queue_stats: await this.queueManager.getStats()
     };
+  }
+
+  /**
+   * Format uptime in human-readable format (Phase 4)
+   */
+  formatUptime(ms) {
+    if (!ms) return 'Not started';
+
+    const seconds = Math.floor(ms / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    if (days > 0) return `${days}d ${hours % 24}h ${minutes % 60}m`;
+    if (hours > 0) return `${hours}h ${minutes % 60}m`;
+    if (minutes > 0) return `${minutes}m ${seconds % 60}s`;
+    return `${seconds}s`;
   }
 
   /**

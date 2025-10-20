@@ -1,4 +1,51 @@
 {
   "version": "1.0",
-  "completed": []
+  "completed": [
+    {
+      "work_id": "wq-1761003082259",
+      "file_path": "d:\\jjumV\\jjum\\00_Inbox\\test-recovery.md",
+      "final_path": "d:\\jjumV\\jjum\\00_Inbox\\test-recovery.md",
+      "started_at": "2025-10-20T23:31:22.262Z",
+      "completed_at": "2025-10-20T23:45:02.702Z",
+      "total_duration_ms": 820441,
+      "agents_executed": [
+        {
+          "name": "normalization",
+          "status": "completed",
+          "duration_ms": 5,
+          "started_at": "2025-10-20T23:31:22.262Z",
+          "completed_at": "2025-10-20T23:31:22.262Z"
+        },
+        {
+          "name": "keyword-extraction",
+          "status": "completed",
+          "duration_ms": 15,
+          "started_at": "2025-10-20T23:31:22.262Z",
+          "completed_at": "2025-10-20T23:31:22.262Z"
+        },
+        {
+          "name": "linking",
+          "status": "completed",
+          "duration_ms": 38,
+          "started_at": "2025-10-20T23:32:26.097Z",
+          "completed_at": "2025-10-20T23:32:26.135Z"
+        },
+        {
+          "name": "filing",
+          "status": "completed",
+          "duration_ms": 6,
+          "started_at": "2025-10-20T23:32:26.136Z",
+          "completed_at": "2025-10-20T23:32:26.142Z"
+        }
+      ],
+      "metadata": {
+        "keywords_extracted": 0,
+        "links_created": 0,
+        "tags_added": [],
+        "destination_folder": null
+      },
+      "errors": [],
+      "retries": 0
+    }
+  ]
 }

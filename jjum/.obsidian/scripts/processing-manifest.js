@@ -253,7 +253,7 @@ class ProcessingManifest {
 
         return acc;
       }, {}),
-      errors: manifest.current_processing.reduce((count, item) => count + item.errors.length, 0)
+      errors: manifest.current_processing.reduce((count, item) => count + (item.errors?.length || 0), 0)
     };
   }
 }

@@ -45,6 +45,40 @@
       "enabled": true
     },
     {
+      "id": "rule-005",
+      "name": "TypeScript Content (Phase 4 - Content-based)",
+      "priority": 5,
+      "conditions": {
+        "content_keywords": ["typescript", "type safety", "interface", "generic"],
+        "any": true
+      },
+      "destination": "3_Resources/TypeScript",
+      "enabled": true
+    },
+    {
+      "id": "rule-006",
+      "name": "Tutorial Articles (Phase 4 - Pattern-based)",
+      "priority": 6,
+      "conditions": {
+        "content_patterns": ["step \\d+", "tutorial", "how to", "guide"],
+        "any": true
+      },
+      "destination": "3_Resources/Tutorials",
+      "enabled": true
+    },
+    {
+      "id": "rule-007",
+      "name": "API Documentation (Phase 4 - Multi-condition)",
+      "priority": 4,
+      "conditions": {
+        "tags": ["api", "documentation"],
+        "content_keywords": ["endpoint", "request", "response"],
+        "any": true
+      },
+      "destination": "3_Resources/API-Docs",
+      "enabled": true
+    },
+    {
       "id": "rule-default",
       "name": "Default - General Resources",
       "priority": 999,
