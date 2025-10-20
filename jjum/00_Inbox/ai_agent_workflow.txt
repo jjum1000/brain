@@ -1,0 +1,1126 @@
+# AI 에이전트 중심 지식 관리 시스템 - 재설계
+
+> **핵심 전제**: 작업자는 인간이 아닌 **AI 에이전트(Claude Code, Claude API 등)**
+> 
+> **설계 원칙**: 
+> 1. 인간용 UX/피드백 제거 → 에이전트 간 데이터 교환 최적화
+> 2. 세션 독립성 보장 → 모든 필요 정보를 구조화된 파일에서 획득
+
+---
+
+## 🤖 AI 에이전트 작업 특성 분석
+
+### 인간 vs AI 에이전트 차이점
+
+| 항목 | 인간 작업자 | AI 에이전트 |
+|-----|----------|-----------|
+| **메모리** | 세션 간 연속적 | 세션마다 초기화 |
+| **피드백** | 시각적 알림 필요 | JSON/구조화 데이터만 필요 |
+| **투명성** | 처리 과정 설명 필요 | 결과물만 중요 |
+| **통제** | 수동 확인 옵션 필요 | 규칙 기반 자동 실행 |
+| **에러 처리** | "왜 실패했나" 설명 | "어떻게 복구하나" 정보 |
+| **정보 접근** | 탐색/검색 | 명시적 경로 필요 |
+
+### 제거해야 할 인간 중심 요소
+
+```diff
+- ❌ Obsidian 알림 (new Notice(...))
+- ❌ 사용자 확인 프롬프트 (semi-auto 모드)
+- ❌ 시각적 로그 대시보드
+- ❌ "처리 중..." 진행 상태 표시
+- ❌ 수동 재분류 명령어
+- ❌ 학습 곡선 고려한 점진적 기능 도입
+
++ ✅ 구조화된 작업 명세서 (JSON/YAML)
++ ✅ 명확한 파일 경로 레지스트리
++ ✅ 상태 추적 데이터베이스
++ ✅ 에이전트 간 통신 프로토콜
++ ✅ 결정론적 실행 순서
++ ✅ 자동 복구 메커니즘
+```
+
+---
+
+## 📋 AI 에이전트 작업 시작 프로토콜
+
+### 문제: 세션 초기화 시 "무엇을 어떻게 해야 하는가?"
+
+#### 시나리오 1: Claude Code가 작업 시작
+```
+┌─────────────────────────────────────────┐
+│  Claude Code 실행                        │
+│  $ claude-code "새 문서 처리해줘"         │
+└─────────────────────────────────────────┘
+              ↓
+   ❓ 문제: Claude는 다음을 모름
+   - 어떤 문서를 처리해야 하나?
+   - 파일이 어디 있나?
+   - 어떤 순서로 작업하나?
+   - 이전에 처리된 문서는?
+```
+
+### 해결: Work Queue + Manifest 시스템
+
+#### 핵심 구조: 3개의 상태 추적 파일
+
+```
+.obsidian/state/
+├── work-queue.json          # 처리 대기 목록
+├── processing-manifest.json # 현재 처리 중
+└── completion-log.json      # 처리 완료 이력
+```
+
+---
+
+## 🗂️ 상태 추적 시스템 상세 설계
+
+### 1. Work Queue (작업 대기열)
+
+```json
+{
+  "version": "1.0",
+  "last_updated": "2025-10-19T14:30:00Z",
+  "queue": [
+    {
+      "id": "wq-001",
+      "type": "inbox-file",
+      "priority": 1,
+      "created_at": "2025-10-19T14:25:00Z",
+      "file": {
+        "path": "00_Inbox/react-server-components.md",
+        "size_bytes": 12450,
+        "hash": "sha256:a3f2b1c...",
+        "source": "web-clipper"
+      },
+      "required_agents": [
+        "normalization",
+        "keyword-extraction", 
+        "linking",
+        "filing"
+      ],
+      "context": {
+        "origin_url": "https://example.com/article",
+        "clipped_at": "2025-10-19T14:20:00Z"
+      }
+    },
+    {
+      "id": "wq-002",
+      "type": "git-commit",
+      "priority": 2,
+      "created_at": "2025-10-19T14:28:00Z",
+      "file": {
+        "path": "00_Inbox/git-imports/a3f2b1c-UserDashboard.jsx.md",
+        "size_bytes": 8920,
+        "hash": "sha256:xyz789...",
+        "source": "git-commit"
+      },
+      "required_agents": [
+        "normalization",
+        "keyword-extraction",
+        "linking",
+        "tagging",
+        "filing"
+      ],
+      "context": {
+        "commit_hash": "a3f2b1c",
+        "commit_message": "refactor: useState to Zustand",
+        "author": "developer",
+        "changed_files": ["src/components/UserDashboard.jsx"]
+      }
+    }
+  ]
+}
+```
+
+#### Work Queue 업데이트 메커니즘
+
+```javascript
+// .obsidian/scripts/queue-manager.js
+
+class WorkQueueManager {
+  constructor() {
+    this.queuePath = '.obsidian/state/work-queue.json';
+  }
+  
+  // 파일 생성 시 자동 추가
+  async addToQueue(filePath, metadata = {}) {
+    const queue = await this.load();
+    
+    const item = {
+      id: `wq-${Date.now()}`,
+      type: this.detectType(filePath),
+      priority: this.calculatePriority(filePath, metadata),
+      created_at: new Date().toISOString(),
+      file: {
+        path: filePath,
+        size_bytes: fs.statSync(filePath).size,
+        hash: await this.calculateHash(filePath),
+        source: metadata.source || 'unknown'
+      },
+      required_agents: this.determineAgents(filePath, metadata),
+      context: metadata
+    };
+    
+    queue.queue.push(item);
+    queue.last_updated = new Date().toISOString();
+    
+    await this.save(queue);
+    return item.id;
+  }
+  
+  // 다음 작업 가져오기
+  async getNext() {
+    const queue = await this.load();
+    
+    // 우선순위 정렬 (priority 낮을수록 먼저)
+    queue.queue.sort((a, b) => a.priority - b.priority);
+    
+    if (queue.queue.length === 0) {
+      return null;
+    }
+    
+    // 첫 번째 항목 반환 (제거하지 않음)
+    return queue.queue[0];
+  }
+  
+  // 작업 시작 시 Processing Manifest로 이동
+  async startProcessing(workItemId) {
+    const queue = await this.load();
+    const index = queue.queue.findIndex(item => item.id === workItemId);
+    
+    if (index === -1) {
+      throw new Error(`Work item ${workItemId} not found`);
+    }
+    
+    const item = queue.queue.splice(index, 1)[0];
+    queue.last_updated = new Date().toISOString();
+    await this.save(queue);
+    
+    // Processing Manifest에 추가
+    await ProcessingManifest.add(item);
+    
+    return item;
+  }
+}
+```
+
+---
+
+### 2. Processing Manifest (처리 중 상태)
+
+```json
+{
+  "version": "1.0",
+  "current_processing": [
+    {
+      "work_id": "wq-001",
+      "file_path": "00_Inbox/react-server-components.md",
+      "started_at": "2025-10-19T14:30:15Z",
+      "agent_pipeline": [
+        {
+          "name": "normalization",
+          "status": "completed",
+          "started_at": "2025-10-19T14:30:15Z",
+          "completed_at": "2025-10-19T14:30:17Z",
+          "duration_ms": 2100,
+          "output": {
+            "modified_path": "00_Inbox/react-server-components.md",
+            "changes": ["html_removed", "frontmatter_added"]
+          }
+        },
+        {
+          "name": "keyword-extraction",
+          "status": "in-progress",
+          "started_at": "2025-10-19T14:30:17Z",
+          "current_step": "nlp_processing"
+        },
+        {
+          "name": "linking",
+          "status": "pending"
+        },
+        {
+          "name": "filing",
+          "status": "pending"
+        }
+      ],
+      "errors": [],
+      "retries": 0
+    }
+  ]
+}
+```
+
+#### Processing Manifest 관리
+
+```javascript
+// .obsidian/scripts/processing-manifest.js
+
+class ProcessingManifest {
+  constructor() {
+    this.manifestPath = '.obsidian/state/processing-manifest.json';
+  }
+  
+  // 새 작업 시작
+  async add(workItem) {
+    const manifest = await this.load();
+    
+    const processing = {
+      work_id: workItem.id,
+      file_path: workItem.file.path,
+      started_at: new Date().toISOString(),
+      agent_pipeline: workItem.required_agents.map(name => ({
+        name,
+        status: 'pending'
+      })),
+      errors: [],
+      retries: 0
+    };
+    
+    manifest.current_processing.push(processing);
+    await this.save(manifest);
+    
+    return processing;
+  }
+  
+  // 에이전트 상태 업데이트
+  async updateAgent(workId, agentName, status, output = null) {
+    const manifest = await this.load();
+    const processing = manifest.current_processing.find(p => p.work_id === workId);
+    
+    if (!processing) {
+      throw new Error(`Processing item ${workId} not found`);
+    }
+    
+    const agent = processing.agent_pipeline.find(a => a.name === agentName);
+    
+    if (!agent) {
+      throw new Error(`Agent ${agentName} not found in pipeline`);
+    }
+    
+    agent.status = status;
+    
+    if (status === 'in-progress') {
+      agent.started_at = new Date().toISOString();
+    } else if (status === 'completed') {
+      agent.completed_at = new Date().toISOString();
+      agent.duration_ms = Date.now() - new Date(agent.started_at).getTime();
+      agent.output = output;
+    } else if (status === 'failed') {
+      agent.error = output;
+    }
+    
+    await this.save(manifest);
+  }
+  
+  // 전체 파이프라인 완료 확인
+  isComplete(workId) {
+    const manifest = this.loadSync();
+    const processing = manifest.current_processing.find(p => p.work_id === workId);
+    
+    return processing.agent_pipeline.every(a => 
+      a.status === 'completed' || a.status === 'skipped'
+    );
+  }
+  
+  // 완료 처리
+  async complete(workId, finalOutput) {
+    const manifest = await this.load();
+    const index = manifest.current_processing.findIndex(p => p.work_id === workId);
+    
+    if (index === -1) {
+      throw new Error(`Processing item ${workId} not found`);
+    }
+    
+    const processing = manifest.current_processing.splice(index, 1)[0];
+    await this.save(manifest);
+    
+    // Completion Log로 이동
+    await CompletionLog.add(processing, finalOutput);
+  }
+}
+```
+
+---
+
+### 3. Completion Log (완료 이력)
+
+```json
+{
+  "version": "1.0",
+  "completed": [
+    {
+      "work_id": "wq-001",
+      "file_path": "00_Inbox/react-server-components.md",
+      "final_path": "3_Resources/React/react-server-components.md",
+      "started_at": "2025-10-19T14:30:15Z",
+      "completed_at": "2025-10-19T14:30:45Z",
+      "total_duration_ms": 30000,
+      "agents_executed": [
+        {
+          "name": "normalization",
+          "duration_ms": 2100,
+          "status": "completed"
+        },
+        {
+          "name": "keyword-extraction",
+          "duration_ms": 5800,
+          "status": "completed"
+        },
+        {
+          "name": "linking",
+          "duration_ms": 3200,
+          "status": "completed"
+        },
+        {
+          "name": "filing",
+          "duration_ms": 1100,
+          "status": "completed"
+        }
+      ],
+      "metadata": {
+        "keywords_extracted": 8,
+        "links_created": 5,
+        "tags_added": ["react", "server-components"],
+        "destination_folder": "3_Resources/React"
+      }
+    }
+  ]
+}
+```
+
+---
+
+## 🔄 AI 에이전트 실행 플로우
+
+### 시나리오: Claude Code가 작업 시작
+
+#### Step 1: 작업 정보 획득
+
+```bash
+# Claude Code 명령어
+$ claude-code "새로운 문서를 처리해줘"
+```
+
+```javascript
+// Claude가 첫 번째로 실행하는 코드
+const WorkQueueManager = require('./.obsidian/scripts/queue-manager');
+const ProcessingManifest = require('./.obsidian/scripts/processing-manifest');
+
+async function main() {
+  // 1. Work Queue에서 다음 작업 가져오기
+  const queueManager = new WorkQueueManager();
+  const nextWork = await queueManager.getNext();
+  
+  if (!nextWork) {
+    console.log('✅ 처리할 문서가 없습니다.');
+    return;
+  }
+  
+  console.log(`📄 작업 시작: ${nextWork.file.path}`);
+  console.log(`   필요한 에이전트: ${nextWork.required_agents.join(', ')}`);
+  
+  // 2. Processing Manifest에 등록
+  await queueManager.startProcessing(nextWork.id);
+  
+  // 3. 에이전트 파이프라인 실행
+  await runAgentPipeline(nextWork);
+}
+
+main();
+```
+
+#### Step 2: 에이전트 파이프라인 실행
+
+```javascript
+async function runAgentPipeline(workItem) {
+  const manifest = new ProcessingManifest();
+  
+  for (const agentName of workItem.required_agents) {
+    console.log(`⚙️  ${agentName} 실행 중...`);
+    
+    // 에이전트 상태: pending → in-progress
+    await manifest.updateAgent(workItem.id, agentName, 'in-progress');
+    
+    try {
+      // 에이전트 실행
+      const agent = require(`./.obsidian/scripts/agent-modules/${agentName}-agent`);
+      
+      // ✅ 중요: 에이전트는 현재 파일 상태를 파일에서 직접 읽음
+      const currentState = await loadDocumentState(workItem.file.path);
+      
+      const result = await agent.execute(currentState);
+      
+      // 에이전트 상태: in-progress → completed
+      await manifest.updateAgent(workItem.id, agentName, 'completed', result);
+      
+      console.log(`   ✅ ${agentName} 완료`);
+      
+    } catch (error) {
+      console.error(`   ❌ ${agentName} 실패: ${error.message}`);
+      
+      // 에이전트 상태: in-progress → failed
+      await manifest.updateAgent(workItem.id, agentName, 'failed', {
+        error: error.message,
+        stack: error.stack
+      });
+      
+      // 에러 처리 전략
+      if (shouldRetry(error)) {
+        console.log(`   🔄 재시도 중...`);
+        // 재시도 로직
+      } else {
+        // 치명적 에러: 작업 중단
+        throw error;
+      }
+    }
+  }
+  
+  // 모든 에이전트 완료
+  const finalOutput = await loadDocumentState(workItem.file.path);
+  await manifest.complete(workItem.id, finalOutput);
+  
+  console.log(`✅ 전체 파이프라인 완료: ${finalOutput.final_path}`);
+}
+```
+
+#### Step 3: 문서 상태 로딩 (세션 독립성 보장)
+
+```javascript
+// 에이전트는 항상 파일에서 최신 상태를 읽음
+async function loadDocumentState(filePath) {
+  const content = fs.readFileSync(filePath, 'utf-8');
+  const { data: frontmatter, content: body } = matter(content);
+  
+  // 구조화된 상태 객체 반환
+  return {
+    path: filePath,
+    frontmatter: frontmatter || {},
+    body: body,
+    
+    // 처리 메타데이터 (이전 에이전트 결과)
+    keywords: frontmatter.keywords || [],
+    linked_concepts: frontmatter.linked_concepts || [],
+    unlinked_keywords: frontmatter.unlinked_keywords || [],
+    tags: frontmatter.tags || [],
+    
+    // 원본 정보
+    created: frontmatter.created,
+    source: frontmatter.source,
+    
+    // 파일 정보
+    size_bytes: fs.statSync(filePath).size,
+    last_modified: fs.statSync(filePath).mtime
+  };
+}
+```
+
+---
+
+## 🗄️ 리소스 레지스트리 시스템
+
+### 문제: 에이전트가 필요한 데이터에 접근하는 방법
+
+```
+에이전트: "Glossary 목록이 필요해"
+❓ 어디에 있지? 5_Glossary/ 폴더?
+❓ 별칭(alias)은 어떻게 읽지?
+❓ 캐시가 있나?
+```
+
+### 해결: Resource Registry
+
+```json
+// .obsidian/state/resource-registry.json
+{
+  "version": "1.0",
+  "last_updated": "2025-10-19T14:00:00Z",
+  
+  "glossary": {
+    "path": "5_Glossary",
+    "index_file": ".obsidian/state/glossary-index.json",
+    "last_indexed": "2025-10-19T13:50:00Z",
+    "total_items": 124,
+    "cache_valid": true
+  },
+  
+  "tags": {
+    "allowed_tags_file": ".obsidian/config/tag-system.json",
+    "last_updated": "2025-10-15T10:00:00Z"
+  },
+  
+  "folders": {
+    "inbox": "00_Inbox",
+    "git_imports": "00_Inbox/git-imports",
+    "projects": "1_Projects",
+    "areas": "2_Areas",
+    "resources": "3_Resources",
+    "archives": "4_Archives",
+    "glossary": "5_Glossary"
+  },
+  
+  "filing_rules": {
+    "rules_file": ".obsidian/config/filing-rules.json",
+    "last_updated": "2025-10-10T08:00:00Z"
+  }
+}
+```
+
+### Glossary Index (사전 빌드)
+
+```json
+// .obsidian/state/glossary-index.json
+{
+  "version": "1.0",
+  "built_at": "2025-10-19T13:50:00Z",
+  "items": [
+    {
+      "id": "react",
+      "file": "5_Glossary/React.md",
+      "title": "React",
+      "aliases": ["리액트", "react", "React.js"],
+      "tags": ["javascript", "frontend", "library"],
+      "related_concepts": ["JSX", "Virtual DOM", "Hooks"]
+    },
+    {
+      "id": "usestate",
+      "file": "5_Glossary/useState.md",
+      "title": "useState",
+      "aliases": ["useState", "use-state"],
+      "tags": ["react", "hooks", "state-management"],
+      "related_concepts": ["React Hooks", "상태 관리"]
+    }
+  ],
+  
+  "title_map": {
+    "react": "5_Glossary/React.md",
+    "usestate": "5_Glossary/useState.md"
+  },
+  
+  "alias_map": {
+    "리액트": "5_Glossary/React.md",
+    "react.js": "5_Glossary/React.md",
+    "use-state": "5_Glossary/useState.md"
+  }
+}
+```
+
+### 에이전트의 리소스 접근 패턴
+
+```javascript
+// linking-agent.js
+
+const ResourceRegistry = require('../resource-registry');
+
+class LinkingAgent {
+  async execute(documentState) {
+    // 1. Resource Registry에서 Glossary 정보 획득
+    const registry = await ResourceRegistry.load();
+    const glossaryInfo = registry.glossary;
+    
+    // 2. Glossary Index 로드
+    const glossaryIndex = await this.loadGlossaryIndex(glossaryInfo.index_file);
+    
+    // 3. 키워드와 매칭
+    const keywords = documentState.keywords;
+    const links = [];
+    
+    for (const keyword of keywords) {
+      const glossaryFile = this.findMatch(keyword, glossaryIndex);
+      
+      if (glossaryFile) {
+        links.push({
+          keyword: keyword.text,
+          glossary_file: glossaryFile,
+          confidence: keyword.score
+        });
+      }
+    }
+    
+    // 4. 본문에 링크 삽입
+    let linkedBody = documentState.body;
+    for (const link of links) {
+      const linkText = `[[${link.glossary_file.title}]]`;
+      linkedBody = this.replaceFirstOccurrence(linkedBody, link.keyword, linkText);
+    }
+    
+    // 5. Frontmatter 업데이트
+    const updatedFrontmatter = {
+      ...documentState.frontmatter,
+      linked_concepts: links.map(l => l.glossary_file.title),
+      unlinked_keywords: keywords
+        .filter(k => !links.find(l => l.keyword === k.text))
+        .map(k => k.text)
+    };
+    
+    // 6. 파일에 다시 쓰기
+    await this.saveDocument(documentState.path, updatedFrontmatter, linkedBody);
+    
+    return {
+      agent: 'linking',
+      links_created: links.length,
+      unlinked_count: updatedFrontmatter.unlinked_keywords.length
+    };
+  }
+  
+  findMatch(keyword, glossaryIndex) {
+    const normalized = keyword.text.toLowerCase();
+    
+    // 1. Title 직접 매칭
+    if (glossaryIndex.title_map[normalized]) {
+      return glossaryIndex.items.find(
+        item => item.file === glossaryIndex.title_map[normalized]
+      );
+    }
+    
+    // 2. Alias 매칭
+    if (glossaryIndex.alias_map[normalized]) {
+      return glossaryIndex.items.find(
+        item => item.file === glossaryIndex.alias_map[normalized]
+      );
+    }
+    
+    return null;
+  }
+}
+
+module.exports = new LinkingAgent();
+```
+
+---
+
+## 🔧 에이전트별 재설계 (AI 중심)
+
+### 제거된 요소
+
+```diff
+모든 에이전트에서 제거:
+- ❌ 진행 상태 알림
+- ❌ 사용자 확인 대기
+- ❌ 시각적 피드백
+- ❌ 학습 메커니즘 (사용자 선호 추적)
+```
+
+### 추가된 요소
+
+```diff
+모든 에이전트에 추가:
++ ✅ 명확한 입력 스키마 정의
++ ✅ 멱등성(Idempotency) 보장
++ ✅ 부분 실패 허용
++ ✅ 상태 검증
+```
+
+### 에이전트 표준 인터페이스
+
+```javascript
+// base-agent.js
+
+class BaseAgent {
+  constructor(name) {
+    this.name = name;
+    this.registry = null;
+  }
+  
+  // 초기화: Resource Registry 로드
+  async initialize() {
+    const ResourceRegistry = require('../resource-registry');
+    this.registry = await ResourceRegistry.load();
+  }
+  
+  // 입력 검증
+  validateInput(documentState) {
+    const required = ['path', 'frontmatter', 'body'];
+    
+    for (const field of required) {
+      if (!documentState[field]) {
+        throw new Error(`Missing required field: ${field}`);
+      }
+    }
+    
+    return true;
+  }
+  
+  // 실행
+  async execute(documentState) {
+    await this.initialize();
+    this.validateInput(documentState);
+    
+    const startTime = Date.now();
+    
+    try {
+      const result = await this.process(documentState);
+      
+      const duration = Date.now() - startTime;
+      
+      return {
+        agent: this.name,
+        status: 'completed',
+        duration_ms: duration,
+        ...result
+      };
+      
+    } catch (error) {
+      return {
+        agent: this.name,
+        status: 'failed',
+        error: error.message,
+        stack: error.stack
+      };
+    }
+  }
+  
+  // 서브클래스에서 구현
+  async process(documentState) {
+    throw new Error('process() must be implemented');
+  }
+  
+  // 파일 저장 유틸리티
+  async saveDocument(filePath, frontmatter, body) {
+    const yaml = require('js-yaml');
+    
+    const frontmatterStr = yaml.dump(frontmatter);
+    const content = `---\n${frontmatterStr}---\n\n${body}`;
+    
+    fs.writeFileSync(filePath, content, 'utf-8');
+  }
+}
+
+module.exports = BaseAgent;
+```
+
+---
+
+## 🚀 전체 시스템 실행 예시
+
+### Scenario: Claude Code가 새 세션에서 작업 시작
+
+```javascript
+// main-processor.js
+
+const WorkQueueManager = require('./.obsidian/scripts/queue-manager');
+const ProcessingManifest = require('./.obsidian/scripts/processing-manifest');
+
+async function processNextDocument() {
+  console.log('🤖 AI 에이전트 작업 시작\n');
+  
+  // Step 1: Work Queue 확인
+  console.log('📋 Work Queue 확인 중...');
+  const queueManager = new WorkQueueManager();
+  const nextWork = await queueManager.getNext();
+  
+  if (!nextWork) {
+    console.log('✅ 처리할 문서가 없습니다.\n');
+    return { status: 'idle', message: 'Queue is empty' };
+  }
+  
+  console.log(`📄 작업 발견: ${nextWork.file.path}`);
+  console.log(`   우선순위: ${nextWork.priority}`);
+  console.log(`   필요 에이전트: ${nextWork.required_agents.join(', ')}\n`);
+  
+  // Step 2: Processing Manifest에 등록
+  console.log('🔄 작업 시작 등록 중...');
+  await queueManager.startProcessing(nextWork.id);
+  const manifest = new ProcessingManifest();
+  
+  // Step 3: 에이전트 파이프라인 실행
+  console.log('⚙️  에이전트 파이프라인 실행\n');
+  
+  for (const agentName of nextWork.required_agents) {
+    console.log(`   [${agentName}] 시작...`);
+    await manifest.updateAgent(nextWork.id, agentName, 'in-progress');
+    
+    try {
+      // 에이전트 로드
+      const AgentClass = require(`./.obsidian/scripts/agent-modules/${agentName}-agent`);
+      const agent = new AgentClass();
+      
+      // 현재 문서 상태 로드 (파일에서)
+      const documentState = await loadDocumentState(nextWork.file.path);
+      
+      // 에이전트 실행
+      const result = await agent.execute(documentState);
+      
+      await manifest.updateAgent(nextWork.id, agentName, 'completed', result);
+      console.log(`   [${agentName}] 완료 (${result.duration_ms}ms)`);
+      
+    } catch (error) {
+      console.error(`   [${agentName}] 실패: ${error.message}`);
+      await manifest.updateAgent(nextWork.id, agentName, 'failed', {
+        error: error.message
+      });
+      
+      // 치명적 에러면 중단
+      throw error;
+    }
+  }
+  
+  // Step 4: 완료 처리
+  console.log('\n✅ 모든 에이전트 완료');
+  const finalState = await loadDocumentState(nextWork.file.path);
+  await manifest.complete(nextWork.id, {
+    final_path: finalState.path,
+    keywords_extracted: finalState.keywords?.length || 0,
+    links_created: finalState.linked_concepts?.length || 0,
+    tags_added: finalState.tags?.length || 0
+  });
+  
+  console.log(`📁 최종 위치: ${finalState.path}\n`);
+  
+  return {
+    status: 'completed',
+    work_id: nextWork.id,
+    file: finalState.path
+  };
+}
+
+// 실행
+processNextDocument()
+  .then(result => {
+    console.log('결과:', JSON.stringify(result, null, 2));
+  })
+  .catch(error => {
+    console.error('치명적 에러:', error);
+    process.exit(1);
+  });
+```
+
+### 실행 결과 출력 예시
+
+```
+🤖 AI 에이전트 작업 시작
+
+📋 Work Queue 확인 중...
+📄 작업 발견: 00_Inbox/react-server-components.md
+   우선순위: 1
+   필요 에이전트: normalization, keyword-extraction, linking, filing
+
+🔄 작업 시작 등록 중...
+⚙️  에이전트 파이프라인 실행
+
+   [normalization] 시작...
+   [normalization] 완료 (2100ms)
+   [keyword-extraction] 시작...
+   [keyword-extraction] 완료 (5800ms)
+   [linking] 시작...
+   [linking] 완료 (3200ms)
+   [filing] 시작...
+   [filing] 완료 (1100ms)
+
+✅ 모든 에이전트 완료
+📁 최종 위치: 3_Resources/React/react-server-components.md
+
+결과: {
+  "status": "completed",
+  "work_id": "wq-001",
+  "file": "3_Resources/React/react-server-components.md"
+}
+```
+
+---
+
+## 📊 AI 에이전트 중심 재설계 비교
+
+### Before: 인간 중심 설계
+
+```javascript
+// 사용자 확인 대기
+const shouldContinue = await prompt('계속하시겠습니까?');
+if (!shouldContinue) return;
+
+// 시각적 피드백
+showNotification('처리 중...');
+updateProgressBar(50);
+
+// 수동 재분류
+if (userWantsToOverride) {
+  moveToCustomLocation();
+}
+```
+
+### After: AI 에이전트 중심
+
+```javascript
+// Work Queue에서 자동 획득
+const nextWork = await queueManager.getNext();
+
+// 상태는 파일에 기록 (세션 독립성)
+await manifest.updateAgent(workId, agentName, 'completed', result);
+
+// 모든 결정은 규칙 기반
+const destination = FilingRules.determine(document.tags);
+await moveFile(document.path, destination);
+```
+
+---
+
+## 🎯 핵심 개선 사항 요약
+
+### 1. 세션 독립성 보장
+
+```
+✅ Work Queue: 무엇을 처리할지
+✅ Processing Manifest: 현재 어디까지 진행되었는지
+✅ Resource Registry: 필요한 데이터가 어디에 있는지
+✅ Glossary Index: 사전 빌드된 인덱스
+```
+
+### 2. 인간 UX 제거
+
+```
+❌ 알림, 프롬프트, 진행 표시
+✅ 구조화된 JSON 상태 파일
+✅ 로그는 파일로 저장
+```
+
+### 3. 멱등성 및 복구 가능성
+
+```javascript
+// 동일 작업을 여러 번 실행해도 안전
+if (documentState.frontmatter.status === 'processed') {
+  console.log('이미 처리됨, 건너뜀');
+  return;
+}
+
+// 중간 실패 시 재개 가능
+const manifest = await ProcessingManifest.load();
+const lastCompleted = manifest.agent_pipeline.findLast(a => a.status === 'completed');
+// lastCompleted 다음부터 재시작
+```
+
+### 4. 완전 자동화
+
+```
+트리거: 파일 생성 → Work Queue 자동 추가
+실행: Claude Code → Queue 확인 → 자동 처리
+완료: Completion Log 기록 → 다음 작업 대기
+```
+
+---
+
+## 🚀 AI 에이전트 실행 시나리오
+
+### Scenario 1: Git Commit → 자동 처리
+
+```bash
+# 1. 개발자가 커밋
+$ git commit -m "feat: Add new component"
+
+# 2. post-commit Hook
+# → Work Queue에 자동 추가
+
+# 3. Claude Code (별도 실행 또는 cron)
+$ claude-code "process-queue"
+
+# 4. 자동 처리
+# → Processing Manifest 추적
+# → 에이전트 순차 실행
+# → Completion Log 기록
+# → 문서 자동 이동
+```
+
+### Scenario 2: 웹 클리핑 → 배치 처리
+
+```bash
+# 1. 사용자가 여러 아티클 클리핑
+# → 00_Inbox/에 5개 파일 생성
+
+# 2. 파일 감시자가 Work Queue에 추가
+# → 5개 항목이 큐에 대기
+
+# 3. Claude Code 실행
+$ claude-code "process-all-queue"
+
+# 4. 배치 처리
+# → 5개 문서 순차 처리
+# → 각각 Processing Manifest 추적
+# → 모두 완료 후 종료
+```
+
+### Scenario 3: 실패 복구
+
+```bash
+# 1. 처리 중 네트워크 에러로 중단
+
+# 2. Processing Manifest 상태:
+{
+  "agent_pipeline": [
+    {"name": "normalization", "status": "completed"},
+    {"name": "keyword-extraction", "status": "failed"},
+    {"name": "linking", "status": "pending"}
+  ]
+}
+
+# 3. Claude Code 재실행
+$ claude-code "retry-failed"
+
+# 4. 자동 복구
+# → 실패한 에이전트부터 재시작
+# → 완료된 에이전트는 건너뜀
+```
+
+---
+
+## 📋 AI 에이전트용 체크리스트
+
+### ✅ 필수 구현 사항
+
+- [ ] Work Queue 시스템
+- [ ] Processing Manifest 시스템
+- [ ] Completion Log 시스템
+- [ ] Resource Registry
+- [ ] Glossary Index (사전 빌드)
+- [ ] 에이전트 표준 인터페이스
+- [ ] 파일 기반 상태 관리
+
+### ❌ 제거할 인간 중심 요소
+
+- [ ] Obsidian 알림 제거
+- [ ] 사용자 프롬프트 제거
+- [ ] 진행 상태 UI 제거
+- [ ] 수동 확인 모드 제거
+
+### 🔄 개선할 에이전트 특성
+
+- [ ] 멱등성 보장
+- [ ] 부분 실패 허용
+- [ ] 상태 검증 추가
+- [ ] 재시도 로직 구현
+
+---
+
+## 🔗 핵심 개념 (Suggested Links)
+
+### AI 에이전트 설계
+- [[세션 독립성]]
+- [[멱등성]]
+- [[상태 기계]]
+- [[Work Queue 패턴]]
+
+### 데이터 구조
+- [[Resource Registry]]
+- [[Processing Manifest]]
+- [[사전 빌드 인덱스]]
+
+### 시스템 통합
+- [[파일 기반 상태 관리]]
+- [[에이전트 간 통신]]
+- [[자동 복구 메커니즘]]
+
+---
+
+## 최종 평가
+
+### ✅ AI 에이전트 중심 설계로 개선된 점
+
+1. **세션 독립성**: 언제든 중단/재개 가능
+2. **완전 자동화**: 인간 개입 불필요
+3. **명확한 상태**: 3개 파일로 모든 상태 추적
+4. **확장 용이**: 새 에이전트 추가 간단
+
+### ⚠️ 주의사항
+
+1. **파일 동기화**: 동시 실행 시 충돌 방지 필요
+2. **에러 누적**: Manifest 정리 메커니즘 필요
+3. **성능**: Queue 크기 제한 고려
+
+이제 **완전히 자동화된 AI 에이전트 워크플로우**가 완성되었습니다! 🤖

@@ -1,0 +1,56 @@
+{
+  "version": "1.0",
+  "last_updated": null,
+  "rules": [
+    {
+      "id": "rule-001",
+      "name": "Git Commits",
+      "priority": 1,
+      "conditions": {
+        "source": "git-commit"
+      },
+      "destination": "1_Projects/Code-Changes",
+      "enabled": true
+    },
+    {
+      "id": "rule-002",
+      "name": "Web Articles - React",
+      "priority": 2,
+      "conditions": {
+        "tags": ["react", "javascript"],
+        "any": true
+      },
+      "destination": "3_Resources/React",
+      "enabled": true
+    },
+    {
+      "id": "rule-003",
+      "name": "Web Articles - Programming",
+      "priority": 3,
+      "conditions": {
+        "tags": ["programming", "coding", "development"],
+        "any": true
+      },
+      "destination": "3_Resources/Programming",
+      "enabled": true
+    },
+    {
+      "id": "rule-004",
+      "name": "Web Clips",
+      "priority": 10,
+      "conditions": {
+        "source": "web-clipper"
+      },
+      "destination": "3_Resources/Web-Clips",
+      "enabled": true
+    },
+    {
+      "id": "rule-default",
+      "name": "Default - General Resources",
+      "priority": 999,
+      "conditions": {},
+      "destination": "3_Resources/General",
+      "enabled": true
+    }
+  ]
+}

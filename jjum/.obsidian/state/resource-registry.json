@@ -1,0 +1,32 @@
+{
+  "version": "1.0",
+  "last_updated": "2025-10-20T23:06:57.403Z",
+  "glossary": {
+    "path": "5_Glossary",
+    "index_file": ".obsidian/state/glossary-index.json",
+    "last_indexed": "2025-10-20T23:06:57.403Z",
+    "total_items": 5,
+    "cache_valid": true
+  },
+  "tags": {
+    "allowed_tags_file": ".obsidian/config/tag-system.json",
+    "last_updated": null
+  },
+  "folders": {
+    "inbox": "00_Inbox",
+    "git_imports": "00_Inbox/git-imports",
+    "projects": "1_Projects",
+    "areas": "2_Areas",
+    "resources": "3_Resources",
+    "archives": "4_Archives",
+    "glossary": "5_Glossary"
+  },
+  "filing_rules": {
+    "rules_file": ".obsidian/config/filing-rules.json",
+    "last_updated": null
+  },
+  "templates": {
+    "path": ".obsidian/templates",
+    "available": []
+  }
+}

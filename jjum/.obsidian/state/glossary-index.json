@@ -1,0 +1,147 @@
+{
+  "version": "1.0",
+  "built_at": "2025-10-20T23:06:57.400Z",
+  "items": [
+    {
+      "id": "closures",
+      "file": "5_Glossary/Closures.md",
+      "title": "Closures",
+      "aliases": [
+        "Closure",
+        "JavaScript Closures",
+        "Closures",
+        "closures"
+      ],
+      "tags": [
+        "javascript",
+        "programming",
+        "concept"
+      ],
+      "related_concepts": [
+        "JavaScript",
+        "Scope",
+        "Functions"
+      ],
+      "created": "2025-10-21T00:00:00.000Z",
+      "modified": null
+    },
+    {
+      "id": "javascript",
+      "file": "5_Glossary/JavaScript.md",
+      "title": "JavaScript",
+      "aliases": [
+        "JS",
+        "자바스크립트",
+        "ECMAScript",
+        "JavaScript",
+        "javascript"
+      ],
+      "tags": [
+        "programming",
+        "web",
+        "language"
+      ],
+      "related_concepts": [
+        "TypeScript",
+        "Node.js",
+        "ECMAScript",
+        "Closures"
+      ],
+      "created": "2025-10-21T00:00:00.000Z",
+      "modified": null
+    },
+    {
+      "id": "react",
+      "file": "5_Glossary/React.md",
+      "title": "React",
+      "aliases": [
+        "리액트",
+        "React.js",
+        "ReactJS",
+        "React",
+        "react"
+      ],
+      "tags": [
+        "javascript",
+        "frontend",
+        "library"
+      ],
+      "related_concepts": [
+        "React Hooks",
+        "JSX",
+        "Virtual DOM",
+        "Server Components"
+      ],
+      "created": "2025-10-21T00:00:00.000Z",
+      "modified": null
+    },
+    {
+      "id": "server-components",
+      "file": "5_Glossary/Server-Components.md",
+      "title": "Server Components",
+      "aliases": [
+        "React Server Components",
+        "RSC",
+        "Server Components",
+        "server components"
+      ],
+      "tags": [
+        "react",
+        "server-side",
+        "rendering"
+      ],
+      "related_concepts": [
+        "React",
+        "Server-Side Rendering",
+        "Performance"
+      ],
+      "created": "2025-10-21T00:00:00.000Z",
+      "modified": null
+    },
+    {
+      "id": "zustand",
+      "file": "5_Glossary/Zustand.md",
+      "title": "Zustand",
+      "aliases": [
+        "zustand",
+        "Zustand"
+      ],
+      "tags": [
+        "javascript",
+        "state-management",
+        "react"
+      ],
+      "related_concepts": [
+        "React",
+        "State Management",
+        "Redux"
+      ],
+      "created": "2025-10-21T00:00:00.000Z",
+      "modified": null
+    }
+  ],
+  "title_map": {
+    "closures": "5_Glossary/Closures.md",
+    "javascript": "5_Glossary/JavaScript.md",
+    "react": "5_Glossary/React.md",
+    "server components": "5_Glossary/Server-Components.md",
+    "zustand": "5_Glossary/Zustand.md"
+  },
+  "alias_map": {
+    "closure": "5_Glossary/Closures.md",
+    "javascript closures": "5_Glossary/Closures.md",
+    "closures": "5_Glossary/Closures.md",
+    "js": "5_Glossary/JavaScript.md",
+    "자바스크립트": "5_Glossary/JavaScript.md",
+    "ecmascript": "5_Glossary/JavaScript.md",
+    "javascript": "5_Glossary/JavaScript.md",
+    "리액트": "5_Glossary/React.md",
+    "react.js": "5_Glossary/React.md",
+    "reactjs": "5_Glossary/React.md",
+    "react": "5_Glossary/React.md",
+    "react server components": "5_Glossary/Server-Components.md",
+    "rsc": "5_Glossary/Server-Components.md",
+    "server components": "5_Glossary/Server-Components.md",
+    "zustand": "5_Glossary/Zustand.md"
+  }
+}
