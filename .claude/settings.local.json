@@ -1,10 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "Bash(node .obsidian/scripts/glossary-builder.js search \"javascript\")",
-      "Bash(node .obsidian/scripts/filing-rules-engine.js list)",
-      "Bash(node .obsidian/scripts/test-phase4.js)",
-      "Bash(git add -A)"
+      "Bash(node .obsidian/scripts/:*)",
+      "Bash(git:*)",
+      "Bash(git add .claude/settings.local.json)",
+      "Bash(git commit -m \"chore: Simplify permissions to allow all scripts and git commands\")"
     ],
     "deny": [],
     "ask": []
