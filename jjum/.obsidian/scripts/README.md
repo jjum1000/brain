@@ -435,6 +435,201 @@ node .obsidian/scripts/test-phase4.js
 - Phase 4: Scoring 시스템으로 정확도 향상
 - Phase 4: Relevance ranking으로 검색 품질 개선
 
+## 🚀 Phase 5: 통합 및 트리거 시스템 (2025-10-21)
+
+Phase 5에서는 시스템의 실용성과 자동화를 극대화하는 통합 인터페이스와 트리거 시스템을 구축했습니다.
+
+### 🎯 통합 CLI 인터페이스
+
+**단일 진입점으로 모든 기능 통합**
+
+```bash
+# CLI 도움말
+node cli.js help
+
+# 시스템 상태 확인
+node cli.js status
+```
+
+**주요 CLI 명령어 그룹:**
+
+**1. Queue Management (큐 관리)**
+```bash
+node cli.js process-next      # 다음 작업 처리
+node cli.js process-all        # 모든 작업 처리
+node cli.js retry-failed       # 실패 작업 재시도
+node cli.js queue-list         # 큐 목록 보기
+```
+
+**2. Glossary Management (용어집 관리)**
+```bash
+node cli.js glossary-build           # 인덱스 빌드
+node cli.js glossary-search "react"  # 용어 검색
+node cli.js glossary-advanced "js"   # 고급 검색
+node cli.js glossary-related "react" # 연관 용어 찾기
+node cli.js glossary-stats           # 통계
+```
+
+**3. Filing Rules (파일링 규칙)**
+```bash
+node cli.js rules-list         # 규칙 목록
+node cli.js rules-stats        # 통계
+node cli.js rules-test <file>  # 파일 매칭 테스트
+```
+
+**4. File Watcher (파일 감시)**
+```bash
+node cli.js watch              # 00_Inbox 감시 시작
+node cli.js scan               # 기존 파일 스캔
+node cli.js watch-stats        # 통계
+```
+
+**5. System Maintenance (시스템 유지보수)**
+```bash
+node cli.js clean              # 로그 정리
+node cli.js init               # 시스템 초기화
+node cli.js validate           # 설정 검증
+node cli.js version            # 버전 정보
+```
+
+### 🔗 Git Hook 통합
+
+**자동 커밋 문서화 시스템**
+
+모든 Git 커밋이 자동으로 문서화되어 지식 베이스에 추가됩니다.
+
+**설치:**
+```bash
+node .obsidian/scripts/install-git-hook.js install
+```
+
+**상태 확인:**
+```bash
+node .obsidian/scripts/install-git-hook.js status
+```
+
+**제거:**
+```bash
+node .obsidian/scripts/install-git-hook.js uninstall
+```
+
+**자동 생성되는 커밋 문서:**
+- 파일 위치: `00_Inbox/git-commit-{hash}.md`
+- Frontmatter 포함:
+  - `type`: git-commit
+  - `commit_hash`: 전체 해시
+  - `commit_type`: feat, fix, docs 등
+  - `author`, `email`, `timestamp`
+  - `total_files`: 변경된 파일 수
+  - `tags`: 자동 태그 (git, commit, {type})
+
+**커밋 문서 구조:**
+```markdown
+---
+type: git-commit
+source: git-hook
+commit_hash: abc123...
+commit_hash_short: abc123
+commit_type: feat
+author: Your Name
+email: you@example.com
+timestamp: 2025-10-21T12:34:56+09:00
+total_files: 5
+tags:
+  - git
+  - commit
+  - feat
+---
+
+# Git Commit: abc123
+
+## Commit Message
+...
+
+## Changed Files
+- `file1.js`
+- `file2.md`
+```
+
+**워크플로우:**
+1. 코드 변경 및 커밋: `git commit -m "feat: Add new feature"`
+2. Post-commit hook 자동 실행
+3. 커밋 문서 생성: `00_Inbox/git-commit-abc123.md`
+4. Work Queue에 자동 추가
+5. CLI로 처리: `node cli.js process-next`
+
+### 🎨 CLI 사용자 경험
+
+**컬러 출력:**
+- ✅ 성공 (녹색)
+- ❌ 에러 (빨강)
+- ⚠️  경고 (노랑)
+- ℹ️  정보 (청록)
+
+**명확한 피드백:**
+- 작업 진행 상황 표시
+- 에러 메시지와 해결 방법
+- 사용 예제 제공
+
+### 📊 시스템 통합 흐름
+
+```
+Git Commit
+    ↓
+Post-Commit Hook
+    ↓
+git-commit-handler.js
+    ↓
+00_Inbox/git-commit-{hash}.md 생성
+    ↓
+Work Queue 자동 추가
+    ↓
+CLI: node cli.js process-next
+    ↓
+Agent Pipeline 실행
+    ↓
+최종 위치로 파일 이동
+```
+
+### 🛠️ 주요 스크립트
+
+**cli.js**
+- 통합 CLI 인터페이스
+- 모든 명령어의 진입점
+- 컬러 출력 및 도움말
+
+**git-commit-handler.js**
+- Git 커밋 메타데이터 추출
+- 커밋 문서 생성
+- Work Queue 통합
+
+**install-git-hook.js**
+- Git hook 자동 설치/제거
+- 기존 hook 백업
+- 상태 확인
+
+### 🎯 Phase 5 이점
+
+**1. 통합성**
+- 단일 CLI로 모든 기능 접근
+- 일관된 사용자 경험
+- 스크립트 실행 간소화
+
+**2. 자동화**
+- Git 커밋 자동 문서화
+- Work Queue 자동 추가
+- 백그라운드 처리 가능
+
+**3. 추적성**
+- 모든 커밋이 문서로 보존
+- 변경 이력 검색 가능
+- 지식 베이스와 코드 변경 연결
+
+**4. 편의성**
+- 기억하기 쉬운 명령어
+- 자동 완성 지원 (쉘 설정 시)
+- 도움말 항상 제공
+
 ## 🤝 기여
 
 새로운 에이전트나 기능을 추가하려면:
@@ -451,5 +646,5 @@ node .obsidian/scripts/test-phase4.js
 
 ---
 
-**버전**: 1.1.0 (Phase 4 완료)
+**버전**: 1.2.0 (Phase 5 완료)
 **최종 업데이트**: 2025-10-21

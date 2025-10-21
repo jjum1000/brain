@@ -4,7 +4,14 @@
       "Bash(node .obsidian/scripts/:*)",
       "Bash(git:*)",
       "Bash(git add .claude/settings.local.json)",
-      "Bash(git commit -m \"chore: Simplify permissions to allow all scripts and git commands\")"
+      "Bash(git commit -m \"chore: Simplify permissions to allow all scripts and git commands\")",
+      "Bash(node cli.js help)",
+      "Bash(node cli.js version)",
+      "Bash(node cli.js glossary-stats)",
+      "Bash(node install-git-hook.js status)",
+      "Bash(node install-git-hook.js install)",
+      "Bash(git rev-parse --show-toplevel)",
+      "Bash(node test-phase5.js)"
     ],
     "deny": [],
     "ask": []
