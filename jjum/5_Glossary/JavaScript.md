@@ -8,7 +8,13 @@ tags:
   - programming
   - web
   - language
-created: 2025-10-21T00:00:00Z
+created: 2025-10-21T00:00:00.000Z
+reference_count: 6
+source_documents:
+  - 00_Inbox/test-glossary-references.md
+  - 3_Resources/General/introduction-to-typescript.md
+  - 3_Resources/General/node.js-event-loop-explained.md
+ai_updated_at: '2025-10-22T21:56:06.491Z'
 ---
 
 # JavaScript

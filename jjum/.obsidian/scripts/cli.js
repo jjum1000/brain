@@ -73,6 +73,8 @@ ${colors.bright}COMMANDS:${colors.reset}
     glossary-advanced <query> Advanced search with relevance scoring
     glossary-related <term>   Find terms related to the given term
     glossary-stats            Show glossary statistics
+    glossary-usage            Count glossary reference usage (Phase 5)
+    glossary-archive-unused   Archive glossary terms with 0 references (Phase 5)
 
   ${colors.cyan}Filing Rules:${colors.reset}
     rules-list                List all filing rules
@@ -175,9 +177,11 @@ function spawnCommand(scriptName, args = []) {
     process.exit(1);
   }
 
+  // Execute from vault root, not from scripts directory
+  const vaultPath = getVaultPath();
   const child = spawn('node', [scriptPath, ...args], {
     stdio: 'inherit',
-    cwd: __dirname
+    cwd: vaultPath
   });
 
   child.on('error', (err) => {
@@ -272,6 +276,47 @@ async function main() {
 
       case 'glossary-stats':
         spawnCommand('glossary-builder', ['stats']);
+        break;
+
+      case 'glossary-usage':
+        // Phase 5: Count glossary references
+        {
+          const GlossaryReferenceCounter = require('./glossary-reference-counter');
+          const glossaryVaultPath = getVaultPath();
+          const counter = new GlossaryReferenceCounter(glossaryVaultPath);
+          (async () => {
+            try {
+              const results = await counter.countAllReferences();
+
+              // Display stats based on options
+              const options = {
+                zeroOnly: process.argv.includes('--zero'),
+                sortAsc: process.argv.includes('--sort-asc'),
+                update: process.argv.includes('--update')
+              };
+
+              counter.displayStats(results, options);
+
+              // Save statistics
+              const stats = await counter.saveStatistics(results);
+              success('Statistics saved to: .obsidian/state/glossary-reference-stats.json');
+
+              // Update glossary files if requested
+              if (options.update) {
+                await counter.updateGlossaryFiles(results);
+              }
+            } catch (error) {
+              error('Failed to count references: ' + error.message);
+              process.exit(1);
+            }
+          })();
+        }
+        break;
+
+      case 'glossary-archive-unused':
+        // Phase 5: Archive unused glossary terms
+        info('This command will be implemented in Phase 5-4');
+        warning('For now, use: node cli.js glossary-usage --zero to see unused terms');
         break;
 
       // Filing Rules

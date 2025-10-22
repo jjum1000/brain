@@ -1,0 +1,23 @@
+{
+  "version": "1.0",
+  "calculated_at": "2025-10-22T21:56:06.510Z",
+  "total_terms": 5,
+  "total_references": 21,
+  "zero_reference_count": 0,
+  "by_count": {
+    "2": [
+      "Server Components",
+      "Zustand"
+    ],
+    "3": [
+      "Closures"
+    ],
+    "6": [
+      "JavaScript"
+    ],
+    "8": [
+      "React"
+    ]
+  },
+  "unused_terms": []
+}
