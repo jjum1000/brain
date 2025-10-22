@@ -8,10 +8,9 @@ tags:
   - server-side
   - rendering
 created: 2025-10-21T00:00:00.000Z
-reference_count: 2
-source_documents:
-  - 00_Inbox/test-glossary-references.md
-ai_updated_at: '2025-10-22T21:56:06.505Z'
+reference_count: 0
+source_documents: []
+ai_updated_at: '2025-10-22T22:15:40.979Z'
 ---
 
 # Server Components

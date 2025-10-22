@@ -1,0 +1,63 @@
+[
+  {
+    "timestamp": "2025-10-22T22:16:06.875Z",
+    "archived_count": 5,
+    "preserved_count": 3,
+    "errors_count": 0,
+    "details": {
+      "archived": [
+        {
+          "term": "Components",
+          "title": "Components",
+          "archivedAt": "2025-10-22T22:16:06.872Z",
+          "daysUnused": 0
+        },
+        {
+          "term": "Functions",
+          "title": "Functions",
+          "archivedAt": "2025-10-22T22:16:06.873Z",
+          "daysUnused": 0
+        },
+        {
+          "term": "Hooks",
+          "title": "Hooks",
+          "archivedAt": "2025-10-22T22:16:06.873Z",
+          "daysUnused": 0
+        },
+        {
+          "term": "State",
+          "title": "State",
+          "archivedAt": "2025-10-22T22:16:06.874Z",
+          "daysUnused": 0
+        },
+        {
+          "term": "Test-Term",
+          "title": "Test Term",
+          "archivedAt": "2025-10-22T22:16:06.875Z",
+          "daysUnused": 0
+        }
+      ],
+      "preserved": [
+        {
+          "term": "Closures",
+          "title": "Closures",
+          "flaggedAt": "2025-10-22T22:16:06.875Z",
+          "action": "REVIEW_NEEDED"
+        },
+        {
+          "term": "Server-Components",
+          "title": "Server Components",
+          "flaggedAt": "2025-10-22T22:16:06.875Z",
+          "action": "REVIEW_NEEDED"
+        },
+        {
+          "term": "Zustand",
+          "title": "Zustand",
+          "flaggedAt": "2025-10-22T22:16:06.875Z",
+          "action": "REVIEW_NEEDED"
+        }
+      ],
+      "errors": []
+    }
+  }
+]

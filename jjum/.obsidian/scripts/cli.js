@@ -73,8 +73,16 @@ ${colors.bright}COMMANDS:${colors.reset}
     glossary-advanced <query> Advanced search with relevance scoring
     glossary-related <term>   Find terms related to the given term
     glossary-stats            Show glossary statistics
-    glossary-usage            Count glossary reference usage (Phase 5)
-    glossary-archive-unused   Archive glossary terms with 0 references (Phase 5)
+    glossary-usage            Count glossary reference usage (Phase 5-1)
+    glossary-create-from <file> Create glossary from specific file (Phase 5-2)
+    glossary-create-batch [dir] Batch create glossary from directory (Phase 5-2)
+    glossary-archive-unused   Archive glossary terms with 0 references (Phase 5-4)
+    glossary-cleanup-detect   Detect unused terms without archiving (Phase 5-4)
+    glossary-cleanup-list     List archived glossary terms (Phase 5-4)
+    glossary-cleanup-restore <term> Restore an archived glossary term (Phase 5-4)
+    glossary-cleanup-stats    Show cleanup statistics (Phase 5-4)
+    glossary-validate         Validate index consistency (Phase 5-6)
+    glossary-validate-quick   Quick integrity check (Phase 5-6)
 
   ${colors.cyan}Filing Rules:${colors.reset}
     rules-list                List all filing rules
@@ -314,9 +322,233 @@ async function main() {
         break;
 
       case 'glossary-archive-unused':
-        // Phase 5: Archive unused glossary terms
-        info('This command will be implemented in Phase 5-4');
-        warning('For now, use: node cli.js glossary-usage --zero to see unused terms');
+        // Phase 5-4: Archive unused glossary terms
+        {
+          const GlossaryCleanupSystem = require('./glossary-cleanup');
+          const cleanupVaultPath = getVaultPath();
+          const cleanup = new GlossaryCleanupSystem(cleanupVaultPath);
+          (async () => {
+            try {
+              const dryRun = process.argv.includes('--dry-run');
+              const minDays = process.argv.includes('--min-days')
+                ? parseInt(process.argv[process.argv.indexOf('--min-days') + 1]) || 0
+                : 0;
+
+              cleanup.ensureArchiveDirectory();
+
+              const unusedTerms = await cleanup.detectUnusedTerms();
+
+              if (unusedTerms.length === 0) {
+                success('No unused terms to archive');
+              } else {
+                const results = await cleanup.archiveUnusedTerms(unusedTerms, {
+                  dryRun: dryRun,
+                  minDaysUnused: minDays
+                });
+
+                console.log(`\n📊 Summary:`);
+                console.log(`   Archived: ${results.archived.length}`);
+                console.log(`   Preserved: ${results.preserved.length}`);
+                console.log(`   Errors: ${results.errors.length}`);
+
+                if (dryRun) {
+                  info('Dry run completed. No files were actually modified.');
+                }
+              }
+            } catch (error) {
+              error('Failed to archive unused terms: ' + error.message);
+              process.exit(1);
+            }
+          })();
+        }
+        break;
+
+      case 'glossary-cleanup-detect':
+        // Phase 5-4: Detect unused terms (alias)
+        {
+          const GlossaryCleanupSystem = require('./glossary-cleanup');
+          const cleanupVaultPath = getVaultPath();
+          const cleanup = new GlossaryCleanupSystem(cleanupVaultPath);
+          (async () => {
+            try {
+              const unused = await cleanup.detectUnusedTerms();
+
+              if (unused.length === 0) {
+                success('No unused terms found!');
+              } else {
+                cleanup.generateCleanupReport(unused);
+              }
+            } catch (error) {
+              error('Failed to detect unused terms: ' + error.message);
+              process.exit(1);
+            }
+          })();
+        }
+        break;
+
+      case 'glossary-cleanup-list':
+        // Phase 5-4: List archived terms
+        {
+          const GlossaryCleanupSystem = require('./glossary-cleanup');
+          const cleanupVaultPath = getVaultPath();
+          const cleanup = new GlossaryCleanupSystem(cleanupVaultPath);
+          cleanup.listArchivedTerms();
+        }
+        break;
+
+      case 'glossary-cleanup-restore':
+        // Phase 5-4: Restore an archived term
+        if (commandArgs.length === 0) {
+          error('Please specify a term to restore');
+          process.exit(1);
+        }
+        {
+          const GlossaryCleanupSystem = require('./glossary-cleanup');
+          const cleanupVaultPath = getVaultPath();
+          const cleanup = new GlossaryCleanupSystem(cleanupVaultPath);
+          const result = cleanup.restoreGlossaryFile(commandArgs[0]);
+          if (result.success) {
+            success(`Restored: ${commandArgs[0]}`);
+          } else {
+            error(`Restore failed: ${result.error}`);
+            process.exit(1);
+          }
+        }
+        break;
+
+      case 'glossary-cleanup-stats':
+        // Phase 5-4: Show cleanup statistics
+        {
+          const GlossaryCleanupSystem = require('./glossary-cleanup');
+          const cleanupVaultPath = getVaultPath();
+          const cleanup = new GlossaryCleanupSystem(cleanupVaultPath);
+          cleanup.displayCleanupStats();
+        }
+        break;
+
+      case 'glossary-create-from':
+        // Phase 5-2: Create glossary from specific file
+        if (commandArgs.length === 0) {
+          error('Please specify a file to process');
+          process.exit(1);
+        }
+        {
+          const GlossaryCreationAgent = require('./agent-modules/glossary-creation-agent');
+          const creationVaultPath = getVaultPath();
+          const creator = new GlossaryCreationAgent(creationVaultPath);
+          const fs = require('fs');
+          const matter = require('gray-matter');
+
+          try {
+            const filePath = path.join(creationVaultPath, commandArgs[0]);
+
+            if (!fs.existsSync(filePath)) {
+              error(`File not found: ${filePath}`);
+              process.exit(1);
+            }
+
+            const content = fs.readFileSync(filePath, 'utf-8');
+            const { data: frontmatter, content: body } = matter(content);
+
+            const result = creator.processSyncContent({
+              path: commandArgs[0],
+              frontmatter: frontmatter,
+              body: body
+            });
+
+            console.log(`\n📊 Glossary Creation Results for: ${commandArgs[0]}\n`);
+            console.log(`   Concepts Found: ${result.concepts_found}`);
+            console.log(`   New Concepts: ${result.new_concepts}`);
+            console.log(`   Existing Concepts: ${result.existing_concepts}`);
+            console.log(`   Glossary Created: ${result.glossary_created}`);
+
+            if (result.created_concepts.length > 0) {
+              console.log(`\n   ✅ Created:`);
+              result.created_concepts.forEach(concept => {
+                console.log(`      • ${concept}`);
+              });
+            }
+
+            success(`Glossary creation complete`);
+          } catch (error) {
+            error('Failed to create glossary: ' + error.message);
+            process.exit(1);
+          }
+        }
+        break;
+
+      case 'glossary-create-batch':
+        // Phase 5-2: Batch create glossary from all documents
+        {
+          const GlossaryCreationAgent = require('./agent-modules/glossary-creation-agent');
+          const creationVaultPath = getVaultPath();
+          const creator = new GlossaryCreationAgent(creationVaultPath);
+
+          try {
+            const directory = commandArgs[0] || '1_Projects';
+
+            console.log(`\n🔄 Batch creating glossary entries from: ${directory}\n`);
+
+            const result = creator.batchCreateFromDirectory(directory);
+
+            console.log(`\n📊 Batch Creation Results\n`);
+            console.log(`   Files Processed: ${result.total_processed}`);
+            console.log(`   Total Concepts Found: ${result.concepts_found}`);
+            console.log(`   Glossary Entries Created: ${result.glossary_created}`);
+
+            success(`Batch glossary creation complete`);
+          } catch (error) {
+            error('Failed to batch create glossary: ' + error.message);
+            process.exit(1);
+          }
+        }
+        break;
+
+      case 'glossary-validate':
+        // Phase 5-6: Validate glossary index consistency
+        {
+          const GlossaryIndexValidator = require('./glossary-index-validator');
+          const validatorVaultPath = getVaultPath();
+          const validator = new GlossaryIndexValidator(validatorVaultPath);
+
+          const fix = process.argv.includes('--fix');
+
+          if (fix) {
+            (async () => {
+              try {
+                const result = await validator.fixConsistencies();
+                console.log(`\n📋 Fix Summary:`);
+                console.log(`   Fixed: ${result.fixed}`);
+                console.log(`   Removed: ${result.removed}`);
+                console.log(`   Errors: ${result.errors}`);
+                success('Index validation and fix completed');
+              } catch (error) {
+                error('Failed to fix index: ' + error.message);
+                process.exit(1);
+              }
+            })();
+          } else {
+            validator.displayValidationReport();
+          }
+        }
+        break;
+
+      case 'glossary-validate-quick':
+        // Phase 5-6: Quick integrity check
+        {
+          const GlossaryIndexValidator = require('./glossary-index-validator');
+          const validatorVaultPath = getVaultPath();
+          const validator = new GlossaryIndexValidator(validatorVaultPath);
+
+          const result = validator.quickCheck();
+          console.log(`\n🔍 Quick Index Check\n`);
+          if (result.ok) {
+            success(result.reason);
+          } else {
+            error(result.reason);
+            process.exit(1);
+          }
+        }
         break;
 
       // Filing Rules

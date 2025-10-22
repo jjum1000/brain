@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "built_at": "2025-10-20T23:47:28.444Z",
+  "built_at": "2025-10-22T22:18:57.915Z",
   "items": [
     {
       "id": "closures",
@@ -128,6 +128,21 @@
       "priority": 9,
       "created": "2025-10-21T00:00:00.000Z",
       "modified": null
+    },
+    {
+      "id": "hooks",
+      "file": "5_Glossary/Hooks.md",
+      "title": "Hooks",
+      "aliases": [
+        "Hooks",
+        "hooks"
+      ],
+      "synonyms": [],
+      "tags": [],
+      "related_concepts": [],
+      "priority": 0,
+      "created": null,
+      "modified": null
     }
   ],
   "title_map": {
@@ -135,7 +150,8 @@
     "javascript": "5_Glossary/JavaScript.md",
     "react": "5_Glossary/React.md",
     "server components": "5_Glossary/Server-Components.md",
-    "zustand": "5_Glossary/Zustand.md"
+    "zustand": "5_Glossary/Zustand.md",
+    "hooks": "5_Glossary/Hooks.md"
   },
   "alias_map": {
     "closure": "5_Glossary/Closures.md",
@@ -152,6 +168,7 @@
     "react server components": "5_Glossary/Server-Components.md",
     "rsc": "5_Glossary/Server-Components.md",
     "server components": "5_Glossary/Server-Components.md",
-    "zustand": "5_Glossary/Zustand.md"
+    "zustand": "5_Glossary/Zustand.md",
+    "hooks": "5_Glossary/Hooks.md"
   }
 }
