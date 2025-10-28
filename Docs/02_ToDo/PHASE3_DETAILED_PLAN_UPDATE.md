@@ -325,10 +325,63 @@ App.tsx 통합:        ✅ 100% (업데이트됨)
 - 모바일 메뉴 Sign In → LoginDialog
 - Dialog 네비게이션 (로그인 ↔ 회원가입, 로그인 ↔ 비밀번호 리셋)
 
+✅ **Firestore TypeScript 타입 정의 (NEW - Task #6 완료)**
+- 7개 주요 Document 인터페이스 작성
+  - User (사용자 프로필)
+  - Trader (트레이더 정보)
+  - Strategy (거래 전략)
+  - Support (투자 정보)
+  - Leaderboard (순위)
+  - Transaction (거래 내역)
+  - Review (리뷰)
+- 15+ 중첩 타입 정의
+  - UserStats, UserPreferences
+  - TraderPerformance, TraderRating
+  - StrategyExecution, StrategyPerformance, StrategyRules
+  - SupportReturns, SupportContract
+  - LeaderboardPeriod, LeaderboardRankingEntry
+- UI 디스플레이 타입 4개
+  - DashboardStats, TraderCard, TransactionRow, LeaderboardEntryDisplay
+- 유틸리티 타입 3개
+  - PaginatedResult<T>, QueryOptions, RealtimeUpdate<T>
+- Firestore Timestamp 유틸 함수
+  - toDate, toISOString, toLocaleDateString, toRelativeTime
+
+---
+
+## 📈 Week 2 최종 진행도 (Session 3 업데이트)
+
+```
+✅ Firebase 인증:        100% (백엔드 + UI + 검증)
+✅ Firestore 타입:       100% (7개 모델 + 헬퍼 타입)
+
+⏳ Firestore 훅:        0% (5개 훅 준비됨)
+⏳ 데이터 연동:         0% (Dashboard, Leaderboard 준비됨)
+
+Week 2 전체 진행도:      50% (6/12 작업 완료)
+```
+
+### 📝 Session 3 완료 내용 (Task #6)
+
+**생성 파일:**
+1. `src/types/firestore.ts` (580+ 라인)
+2. `src/types/index.ts` (40 라인)
+
+**타입 안전성:**
+- ✅ TypeScript strict mode 완전 호환
+- ✅ Firebase Firestore 타입 통합
+- ✅ Phase 2 스키마 완전 변환
+- ✅ UI 컴포넌트 렌더링 타입 포함
+
+**빌드 상태:**
+- ✅ TypeScript 컴파일: 성공 (0 에러)
+- ✅ Vite 빌드: 성공
+- ✅ 번들 크기: 875KB (232KB gzipped)
+
 ---
 
 **작성**: Claude AI (마지막 업데이트: 2025년 10월 29일)
-**상태**: ✅ Phase 3 Week 2 - 인증 UI 완성
-**다음**: Week 2 계속 - Firestore 데이터 타입 및 커스텀 훅 구현
+**상태**: ✅ Phase 3 Week 2 - 50% 완료 (인증 + 타입 정의)
+**다음**: 커스텀 Firestore 훅 구현 (Task #7-9)
 
-🚀 **인증 UI가 완전히 구현됨! 다음은 실제 Firestore 데이터를 Dashboard에 연결**
+🚀 **인증 UI + Firestore 타입 정의 완료! 다음은 커스텀 훅 구현으로 실제 데이터 연동**
