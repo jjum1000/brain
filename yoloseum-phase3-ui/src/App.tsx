@@ -37,6 +37,9 @@ import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
 import { AuthProvider } from '@/context/AuthContext';
 import { useAuth } from '@/hooks/useAuth';
+import { LoginDialog } from '@/components/auth/LoginDialog';
+import { SignupDialog } from '@/components/auth/SignupDialog';
+import { ForgotPasswordDialog } from '@/components/auth/ForgotPasswordDialog';
 
 type PageType = 'home' | 'dashboard' | 'leaderboard' | 'traders' | 'profile';
 
@@ -63,7 +66,10 @@ interface Trader {
 function AppContent() {
   const [currentPage, setCurrentPage] = useState<PageType>('home');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { user, loading, signOut, signInWithGoogle } = useAuth();
+  const [loginDialogOpen, setLoginDialogOpen] = useState(false);
+  const [signupDialogOpen, setSignupDialogOpen] = useState(false);
+  const [forgotPasswordDialogOpen, setForgotPasswordDialogOpen] = useState(false);
+  const { user, loading, signOut } = useAuth();
 
   const mockTransactions: Transaction[] = [
     {
@@ -207,7 +213,7 @@ function AppContent() {
               </div>
             ) : (
               <Button
-                onClick={() => signInWithGoogle()}
+                onClick={() => setLoginDialogOpen(true)}
                 className="hidden md:flex items-center gap-2 bg-amber-600 hover:bg-amber-700"
               >
                 <LogIn className="h-4 w-4" />
@@ -269,7 +275,7 @@ function AppContent() {
               ) : (
                 <Button
                   onClick={() => {
-                    signInWithGoogle();
+                    setLoginDialogOpen(true);
                     setIsMobileMenuOpen(false);
                   }}
                   className="justify-start gap-2 bg-amber-600 hover:bg-amber-700 w-full"
@@ -736,6 +742,38 @@ function AppContent() {
       {currentPage === 'leaderboard' && renderLeaderboard()}
       {currentPage === 'traders' && renderTraders()}
       {currentPage === 'profile' && renderProfile()}
+
+      {/* Auth Dialogs */}
+      <LoginDialog
+        open={loginDialogOpen}
+        onOpenChange={setLoginDialogOpen}
+        onSwitchToSignup={() => {
+          setLoginDialogOpen(false);
+          setSignupDialogOpen(true);
+        }}
+        onSwitchToForgotPassword={() => {
+          setLoginDialogOpen(false);
+          setForgotPasswordDialogOpen(true);
+        }}
+      />
+
+      <SignupDialog
+        open={signupDialogOpen}
+        onOpenChange={setSignupDialogOpen}
+        onSwitchToLogin={() => {
+          setSignupDialogOpen(false);
+          setLoginDialogOpen(true);
+        }}
+      />
+
+      <ForgotPasswordDialog
+        open={forgotPasswordDialogOpen}
+        onOpenChange={setForgotPasswordDialogOpen}
+        onBackToLogin={() => {
+          setForgotPasswordDialogOpen(false);
+          setLoginDialogOpen(true);
+        }}
+      />
     </div>
   );
 }
