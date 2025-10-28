@@ -27,13 +27,13 @@ import { useAuth } from "@/hooks/useAuth";
 interface SignupDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSwitchToLogin: () => void;
+  onSignInClick?: () => void;
 }
 
 export const SignupDialog = ({
   open,
   onOpenChange,
-  onSwitchToLogin,
+  onSignInClick,
 }: SignupDialogProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -273,7 +273,7 @@ export const SignupDialog = ({
               type="button"
               onClick={() => {
                 onOpenChange(false);
-                onSwitchToLogin();
+                onSignInClick?.();
               }}
               className="text-amber-500 hover:text-amber-400 font-medium"
             >

@@ -1,484 +1,144 @@
-import { useState } from 'react';
-import {
-  Home,
-  Trophy,
-  Users,
-  User,
-  LogIn,
-  LogOut,
-  Menu,
-  X,
-  Activity,
-  TrendingUp,
-  Zap,
-  Target,
-  Shield,
-  Loader2,
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Progress } from '@/components/ui/progress';
-import { Separator } from '@/components/ui/separator';
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import { AuthProvider } from '@/context/AuthContext';
-import { useAuth } from '@/hooks/useAuth';
-import { LoginDialog } from '@/components/auth/LoginDialog';
-import { SignupDialog } from '@/components/auth/SignupDialog';
-import { ForgotPasswordDialog } from '@/components/auth/ForgotPasswordDialog';
+import { Layout } from '@/components/Layout';
 import { Dashboard } from '@/components/pages/Dashboard';
 import { Leaderboard } from '@/components/pages/Leaderboard';
+import { NotFound } from '@/components/pages/NotFound';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { ArrowRight, TrendingUp, Target, Shield } from 'lucide-react';
 
-type PageType = 'home' | 'dashboard' | 'leaderboard' | 'traders' | 'profile';
+/**
+ * Home Page Component
+ * Landing page with features and CTA
+ */
+function HomePage() {
+  const navigate = useNavigate();
 
-function AppContent() {
-  const [currentPage, setCurrentPage] = useState<PageType>('home');
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [loginDialogOpen, setLoginDialogOpen] = useState(false);
-  const [signupDialogOpen, setSignupDialogOpen] = useState(false);
-  const [forgotPasswordDialogOpen, setForgotPasswordDialogOpen] = useState(false);
-  const { user, loading, signOut } = useAuth();
+  return (
+    <div className="min-h-[calc(100vh-200px)] bg-slate-900">
+      {/* Hero Section */}
+      <div className="relative py-20 px-4 container mx-auto">
+        <div className="max-w-3xl mx-auto text-center">
+          <Badge className="mb-4 bg-amber-600/20 text-amber-300 border-amber-600/30">
+            Welcome to YOLOSEUM
+          </Badge>
 
-  const navigation = [
-    { name: 'Home', page: 'home' as PageType, icon: Home },
-    { name: 'Dashboard', page: 'dashboard' as PageType, icon: Activity },
-    { name: 'Leaderboard', page: 'leaderboard' as PageType, icon: Trophy },
-    { name: 'Traders', page: 'traders' as PageType, icon: Users },
-    { name: 'Profile', page: 'profile' as PageType, icon: User },
-  ];
-
-  const renderHeader = () => (
-    <header className="sticky top-0 z-50 w-full border-b border-slate-800 bg-slate-900/95 backdrop-blur supports-[backdrop-filter]:bg-slate-900/60">
-      <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Zap className="h-8 w-8 text-amber-500" />
-            <span className="text-xl font-bold text-amber-500">YOLOSEUM</span>
-          </div>
-
-          <nav className="hidden md:flex items-center gap-6">
-            {navigation.map((item) => {
-              const Icon = item.icon;
-              return (
-                <button
-                  key={item.page}
-                  onClick={() => {
-                    setCurrentPage(item.page);
-                    setIsMobileMenuOpen(false);
-                  }}
-                  className={`flex items-center gap-2 text-sm font-medium transition-colors hover:text-amber-500 ${
-                    currentPage === item.page ? 'text-amber-500' : 'text-slate-300'
-                  }`}
-                >
-                  <Icon className="h-4 w-4" />
-                  {item.name}
-                </button>
-              );
-            })}
-          </nav>
-
-          <div className="flex items-center gap-4">
-            {loading ? (
-              <Loader2 className="h-4 w-4 animate-spin text-amber-500" />
-            ) : user ? (
-              <div className="hidden md:flex items-center gap-4">
-                <span className="text-sm text-slate-300">{user.displayName || user.email}</span>
-                <Button
-                  onClick={() => signOut()}
-                  variant="outline"
-                  className="items-center gap-2 border-slate-700 hover:bg-slate-800 hover:text-amber-500"
-                >
-                  <LogOut className="h-4 w-4" />
-                  Sign Out
-                </Button>
-              </div>
-            ) : (
-              <Button
-                onClick={() => setLoginDialogOpen(true)}
-                className="hidden md:flex items-center gap-2 bg-amber-600 hover:bg-amber-700"
-              >
-                <LogIn className="h-4 w-4" />
-                Sign In
-              </Button>
-            )}
-
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden text-slate-300 hover:text-amber-500"
-            >
-              {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-            </button>
-          </div>
-        </div>
-
-        {isMobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-slate-800">
-            <nav className="flex flex-col gap-4">
-              {navigation.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <button
-                    key={item.page}
-                    onClick={() => {
-                      setCurrentPage(item.page);
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className={`flex items-center gap-2 text-sm font-medium transition-colors hover:text-amber-500 ${
-                      currentPage === item.page ? 'text-amber-500' : 'text-slate-300'
-                    }`}
-                  >
-                    <Icon className="h-4 w-4" />
-                    {item.name}
-                  </button>
-                );
-              })}
-              <Separator className="bg-slate-800" />
-              {loading ? (
-                <div className="flex items-center gap-2 text-slate-300">
-                  <Loader2 className="h-4 w-4 animate-spin text-amber-500" />
-                  Loading...
-                </div>
-              ) : user ? (
-                <div className="space-y-2">
-                  <p className="text-sm text-slate-300 px-2">{user.displayName || user.email}</p>
-                  <Button
-                    onClick={() => {
-                      signOut();
-                      setIsMobileMenuOpen(false);
-                    }}
-                    variant="outline"
-                    className="justify-start gap-2 border-slate-700 hover:bg-slate-800 hover:text-amber-500 w-full"
-                  >
-                    <LogOut className="h-4 w-4" />
-                    Sign Out
-                  </Button>
-                </div>
-              ) : (
-                <Button
-                  onClick={() => {
-                    setLoginDialogOpen(true);
-                    setIsMobileMenuOpen(false);
-                  }}
-                  className="justify-start gap-2 bg-amber-600 hover:bg-amber-700 w-full"
-                >
-                  <LogIn className="h-4 w-4" />
-                  Sign In
-                </Button>
-              )}
-            </nav>
-          </div>
-        )}
-      </div>
-    </header>
-  );
-
-  const renderHomePage = () => (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900">
-      <div className="container mx-auto px-4 py-16">
-        <div className="max-w-4xl mx-auto text-center mb-16">
-          <div className="flex justify-center mb-6">
-            <Zap className="h-20 w-20 text-amber-500" />
-          </div>
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
-            Welcome to <span className="text-amber-500">YOLOSEUM</span>
+          <h1 className="text-5xl md:text-6xl font-bold text-white mb-4">
+            Trade Smarter,
+            <span className="text-amber-500"> Earn Better</span>
           </h1>
-          <p className="text-xl text-slate-300 mb-8">
-            The ultimate platform for meme coin trading. Track, compete, and dominate the
-            leaderboard.
+
+          <p className="text-lg text-slate-400 mb-8 max-w-2xl mx-auto">
+            Join the decentralized community of crypto traders. Follow top strategies, learn from the best, and grow
+            your portfolio with our innovative trading platform.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+
+          <div className="flex gap-4 justify-center mb-12 flex-wrap">
             <Button
-              onClick={() => setCurrentPage('dashboard')}
-              size="lg"
-              className="bg-amber-600 hover:bg-amber-700 text-lg px-8"
+              onClick={() => navigate('/dashboard')}
+              className="bg-amber-600 hover:bg-amber-700 text-white px-8 py-6 text-lg flex items-center gap-2"
             >
               Get Started
+              <ArrowRight className="h-5 w-5" />
             </Button>
             <Button
-              onClick={() => setCurrentPage('leaderboard')}
-              size="lg"
+              onClick={() => navigate('/leaderboard')}
               variant="outline"
-              className="border-slate-700 hover:bg-slate-800 hover:text-amber-500 text-lg px-8"
+              className="border-slate-700 text-slate-300 hover:bg-slate-800 px-8 py-6 text-lg"
             >
               View Leaderboard
             </Button>
           </div>
         </div>
-
-        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-          <Card className="bg-slate-800/50 border-slate-700">
-            <CardHeader>
-              <div className="flex justify-center mb-4">
-                <Target className="h-12 w-12 text-amber-500" />
-              </div>
-              <CardTitle className="text-white text-center">Smart Trading</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-slate-300 text-center">
-                Advanced tools and analytics to make informed trading decisions in real-time.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-slate-800/50 border-slate-700">
-            <CardHeader>
-              <div className="flex justify-center mb-4">
-                <Trophy className="h-12 w-12 text-amber-500" />
-              </div>
-              <CardTitle className="text-white text-center">Compete & Win</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-slate-300 text-center">
-                Climb the leaderboard and earn rewards by showcasing your trading skills.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-slate-800/50 border-slate-700">
-            <CardHeader>
-              <div className="flex justify-center mb-4">
-                <Shield className="h-12 w-12 text-amber-500" />
-              </div>
-              <CardTitle className="text-white text-center">Secure Platform</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-slate-300 text-center">
-                Built on Solana blockchain with enterprise-grade security and reliability.
-              </p>
-            </CardContent>
-          </Card>
-        </div>
       </div>
-    </div>
-  );
 
-  const renderDashboard = () => <Dashboard />;
+      {/* Features Section */}
+      <div className="py-12 border-t border-slate-800">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-white text-center mb-12">Why Choose YOLOSEUM?</h2>
 
-  const renderLeaderboard = () => <Leaderboard />;
-
-  const renderTraders = () => (
-    <div className="min-h-screen bg-slate-900">
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Top Traders</h1>
-          <p className="text-slate-400">Follow and learn from the best traders</p>
-        </div>
-
-        <Card className="bg-slate-800/50 border-slate-700 p-8">
-          <div className="text-center">
-            <p className="text-slate-300 mb-4">Traders page coming soon...</p>
-            <p className="text-slate-400 text-sm">Real trader data will be loaded from Firestore</p>
-          </div>
-        </Card>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 hidden">
-          {[].map((trader: any) => (
-            <Card key={trader.id} className="bg-slate-800/50 border-slate-700">
+          <div className="grid md:grid-cols-3 gap-6">
+            <Card className="bg-slate-800/50 border-slate-700">
               <CardHeader>
-                <div className="flex items-center gap-4">
-                  <Avatar className="h-16 w-16">
-                    <AvatarImage src={trader.avatar} />
-                    <AvatarFallback className="bg-amber-600 text-white text-xl">
-                      {trader.name.slice(0, 2).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <CardTitle className="text-white">{trader.name}</CardTitle>
-                    <div className="flex items-center gap-1 mt-1">
-                      <Trophy className="h-4 w-4 text-amber-500" />
-                      <span className="text-sm text-slate-400">Rank #{trader.rank}</span>
-                    </div>
-                  </div>
-                </div>
+                <TrendingUp className="h-8 w-8 text-amber-500 mb-2" />
+                <CardTitle className="text-white">Real-Time Tracking</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-slate-400">Win Rate</span>
-                    <div className="flex items-center gap-2">
-                      <Progress value={trader.winRate} className="w-20 h-2" />
-                      <span className="text-sm font-medium text-white">
-                        {trader.winRate}%
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-slate-400">Total Trades</span>
-                    <span className="text-sm font-medium text-white">
-                      {trader.totalTrades}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-slate-400">Total Profit</span>
-                    <span className="text-sm font-semibold text-green-500">
-                      {trader.profit}
-                    </span>
-                  </div>
-                  <Button className="w-full bg-amber-600 hover:bg-amber-700 mt-4">
-                    Follow Trader
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderProfile = () => (
-    <div className="min-h-screen bg-slate-900">
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-3xl mx-auto">
-          <Card className="bg-slate-800/50 border-slate-700 mb-6">
-            <CardHeader>
-              <div className="flex flex-col md:flex-row items-center gap-6">
-                <Avatar className="h-24 w-24">
-                  <AvatarImage src="" />
-                  <AvatarFallback className="bg-amber-600 text-white text-3xl">
-                    YK
-                  </AvatarFallback>
-                </Avatar>
-                <div className="text-center md:text-left">
-                  <CardTitle className="text-2xl text-white mb-2">YoloKing</CardTitle>
-                  <div className="flex flex-wrap gap-2 justify-center md:justify-start">
-                    <Badge className="bg-amber-600">Rank #12</Badge>
-                    <Badge variant="outline" className="border-slate-600 text-slate-300">
-                      156 Trades
-                    </Badge>
-                    <Badge variant="outline" className="border-slate-600 text-slate-300">
-                      78.5% Win Rate
-                    </Badge>
-                  </div>
-                </div>
-              </div>
-            </CardHeader>
-          </Card>
-
-          <div className="grid md:grid-cols-2 gap-6 mb-6">
-            <Card className="bg-slate-800/50 border-slate-700">
-              <CardHeader>
-                <CardTitle className="text-white">Performance Stats</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-slate-400">Total Profit</span>
-                  <span className="font-semibold text-green-500">$45,231</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-slate-400">Win Rate</span>
-                  <span className="font-semibold text-white">78.5%</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-slate-400">Total Trades</span>
-                  <span className="font-semibold text-white">156</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-slate-400">Best Trade</span>
-                  <span className="font-semibold text-green-500">+$8,234</span>
-                </div>
+                <CardDescription className="text-slate-400">
+                  Monitor top traders and strategies in real-time. Get instant updates on performance metrics and ROI.
+                </CardDescription>
               </CardContent>
             </Card>
 
             <Card className="bg-slate-800/50 border-slate-700">
               <CardHeader>
-                <CardTitle className="text-white">Account Info</CardTitle>
+                <Target className="h-8 w-8 text-amber-500 mb-2" />
+                <CardTitle className="text-white">Smart Strategy Selection</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-slate-400">Member Since</span>
-                  <span className="font-medium text-white">Jan 2025</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-slate-400">Wallet</span>
-                  <span className="font-medium text-white">7x2...9kL</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-slate-400">Status</span>
-                  <Badge className="bg-green-600">Active</Badge>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-slate-400">Level</span>
-                  <Badge className="bg-amber-600">Pro Trader</Badge>
-                </div>
+              <CardContent>
+                <CardDescription className="text-slate-400">
+                  Choose from verified trading strategies backed by real performance data. Follow expert traders
+                  automatically.
+                </CardDescription>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-slate-800/50 border-slate-700">
+              <CardHeader>
+                <Shield className="h-8 w-8 text-amber-500 mb-2" />
+                <CardTitle className="text-white">Secure & Transparent</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-slate-400">
+                  Non-custodial vaults with transparent fees. Your funds remain under your control while earning.
+                </CardDescription>
               </CardContent>
             </Card>
           </div>
-
-          <Card className="bg-slate-800/50 border-slate-700">
-            <CardHeader>
-              <CardTitle className="text-white">Recent Achievements</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="flex flex-col items-center p-4 rounded-lg bg-slate-700/50">
-                  <Trophy className="h-8 w-8 text-amber-500 mb-2" />
-                  <span className="text-xs text-slate-300 text-center">Top 20 Trader</span>
-                </div>
-                <div className="flex flex-col items-center p-4 rounded-lg bg-slate-700/50">
-                  <TrendingUp className="h-8 w-8 text-green-500 mb-2" />
-                  <span className="text-xs text-slate-300 text-center">10 Win Streak</span>
-                </div>
-                <div className="flex flex-col items-center p-4 rounded-lg bg-slate-700/50">
-                  <Zap className="h-8 w-8 text-blue-500 mb-2" />
-                  <span className="text-xs text-slate-300 text-center">Fast Trader</span>
-                </div>
-                <div className="flex flex-col items-center p-4 rounded-lg bg-slate-700/50">
-                  <Target className="h-8 w-8 text-purple-500 mb-2" />
-                  <span className="text-xs text-slate-300 text-center">Sniper</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </div>
       </div>
-    </div>
-  );
 
-  return (
-    <div className="min-h-screen bg-slate-900">
-      {renderHeader()}
-      {currentPage === 'home' && renderHomePage()}
-      {currentPage === 'dashboard' && renderDashboard()}
-      {currentPage === 'leaderboard' && renderLeaderboard()}
-      {currentPage === 'traders' && renderTraders()}
-      {currentPage === 'profile' && renderProfile()}
-
-      {/* Auth Dialogs */}
-      <LoginDialog
-        open={loginDialogOpen}
-        onOpenChange={setLoginDialogOpen}
-        onSwitchToSignup={() => {
-          setLoginDialogOpen(false);
-          setSignupDialogOpen(true);
-        }}
-        onSwitchToForgotPassword={() => {
-          setLoginDialogOpen(false);
-          setForgotPasswordDialogOpen(true);
-        }}
-      />
-
-      <SignupDialog
-        open={signupDialogOpen}
-        onOpenChange={setSignupDialogOpen}
-        onSwitchToLogin={() => {
-          setSignupDialogOpen(false);
-          setLoginDialogOpen(true);
-        }}
-      />
-
-      <ForgotPasswordDialog
-        open={forgotPasswordDialogOpen}
-        onOpenChange={setForgotPasswordDialogOpen}
-        onBackToLogin={() => {
-          setForgotPasswordDialogOpen(false);
-          setLoginDialogOpen(true);
-        }}
-      />
+      {/* CTA Section */}
+      <div className="py-12 border-t border-slate-800">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-2xl font-bold text-white mb-4">Ready to Start Trading?</h2>
+          <p className="text-slate-400 mb-6">
+            Join thousands of traders earning passive income with YOLOSEUM
+          </p>
+          <Button className="bg-amber-600 hover:bg-amber-700 text-white px-8 py-6 text-lg">
+            Sign Up Now
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }
 
+/**
+ * App Content Component
+ * Handles routing and page selection
+ */
+function AppContent() {
+  return (
+    <Router>
+      <Layout>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/leaderboard" element={<Leaderboard />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Layout>
+    </Router>
+  );
+}
+
+/**
+ * Main App Component
+ * Wraps everything with AuthProvider for authentication context
+ */
 export default function App() {
   return (
     <AuthProvider>

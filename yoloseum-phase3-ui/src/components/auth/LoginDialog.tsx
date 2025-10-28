@@ -26,15 +26,15 @@ import { useAuth } from "@/hooks/useAuth";
 interface LoginDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSwitchToSignup: () => void;
-  onSwitchToForgotPassword: () => void;
+  onSignUpClick?: () => void;
+  onForgotPasswordClick?: () => void;
 }
 
 export const LoginDialog = ({
   open,
   onOpenChange,
-  onSwitchToSignup,
-  onSwitchToForgotPassword,
+  onSignUpClick,
+  onForgotPasswordClick,
 }: LoginDialogProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -193,7 +193,7 @@ export const LoginDialog = ({
                 type="button"
                 onClick={() => {
                   onOpenChange(false);
-                  onSwitchToSignup();
+                  onSignUpClick?.();
                 }}
                 className="text-amber-500 hover:text-amber-400 font-medium"
               >
@@ -205,7 +205,7 @@ export const LoginDialog = ({
                 type="button"
                 onClick={() => {
                   onOpenChange(false);
-                  onSwitchToForgotPassword();
+                  onForgotPasswordClick?.();
                 }}
                 className="text-amber-500 hover:text-amber-400"
               >

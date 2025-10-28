@@ -35,7 +35,8 @@
       "Bash(npm run build:*)",
       "Bash(pnpm install:*)",
       "Bash(pnpm run build:*)",
-      "Bash(git log:*)"
+      "Bash(git log:*)",
+      "Bash(pnpm add:*)"
     ],
     "deny": [],
     "ask": []
