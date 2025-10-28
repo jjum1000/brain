@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>YOLOSEUM - My Imperial Treasury</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4B0082",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#1a1121",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Manrope', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="relative flex h-auto min-h-screen w-full flex-col dark group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-white/10 px-6 sm:px-10 lg:px-20 py-4">
+<div class="flex items-center gap-4 text-white">
+<div class="size-6 text-[#FFD700]">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_6_535)">
+<path clip-rule="evenodd" d="M47.2426 24L24 47.2426L0.757355 24L24 0.757355L47.2426 24ZM12.2426 21H35.7574L24 9.24264L12.2426 21Z" fill="currentColor" fill-rule="evenodd"></path>
+</g>
+<defs>
+<clippath id="clip0_6_535">
+<rect fill="white" height="48" width="48"></rect>
+</clippath>
+</defs>
+</svg>
+</div>
+<h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em]">YOLOSEUM</h2>
+</div>
+<div class="hidden md:flex flex-1 justify-center gap-8">
+<div class="flex items-center gap-9">
+<a class="text-white/80 hover:text-white text-sm font-medium leading-normal" href="#">Dashboard</a>
+<a class="text-white text-sm font-bold leading-normal" href="#">Treasury</a>
+<a class="text-white/80 hover:text-white text-sm font-medium leading-normal" href="#">Arena</a>
+<a class="text-white/80 hover:text-white text-sm font-medium leading-normal" href="#">Leaderboard</a>
+<a class="text-white/80 hover:text-white text-sm font-medium leading-normal" href="#">Help</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/80 transition-colors">
+<span class="truncate">Connect Wallet</span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="User profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD33eiQw78VM2eKnfcrTvlDAKYzIgj5OxY0AI8weGP7NowlyWpSzpFuh4_agYNEETO6hVd4A34ZfpSq4tQooHk-9rhgPMKB-UK53qra2B1UtXeL6xN4X9wLRD_9wNDIrGFlJRb_0Es2K-4ifq9f0wSVJJtlcRuwRenP-Bu_PczAs-6jmVZQy6PjRrvrpaBwyoQEpmT8qm8TXBI0O33PXqMAF_Rbh1xPFQTDSW4dr9kTEF1_FUoOs0z3EGusmJuJYP7rfzkPnGsUKH4v");'></div>
+</div>
+</header>
+<main class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+<div class="flex flex-col gap-8">
+<div class="flex flex-wrap justify-between items-center gap-4">
+<p class="text-white text-4xl font-black leading-tight tracking-[-0.033em]">My Imperial Treasury</p>
+<div class="flex flex-wrap gap-3">
+<button class="flex min-w-[84px] items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em] hover:bg-primary/80 transition-colors">
+<span class="truncate">Deposit Funds</span>
+</button>
+<button class="flex min-w-[84px] items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-white/10 text-white text-base font-bold leading-normal tracking-[0.015em] hover:bg-white/20 transition-colors">
+<span class="truncate">Withdraw Funds</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<div class="flex flex-col gap-2 rounded-xl p-6 bg-white/5 border border-white/10">
+<p class="text-white/70 text-base font-medium leading-normal">Total Balance</p>
+<p class="text-[#FFD700] tracking-light text-3xl font-bold leading-tight">$10,000.00</p>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-6 bg-white/5 border border-white/10">
+<p class="text-white/70 text-base font-medium leading-normal">Available to Invest</p>
+<p class="text-white tracking-light text-3xl font-bold leading-tight">$7,500.00</p>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-6 bg-white/5 border border-white/10">
+<p class="text-white/70 text-base font-medium leading-normal">Funds in Combat</p>
+<p class="text-white tracking-light text-3xl font-bold leading-tight">$2,500.00</p>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<div class="lg:col-span-2 flex flex-col gap-4 rounded-xl border border-white/10 p-6 bg-white/5">
+<div class="flex justify-between items-center">
+<p class="text-white text-lg font-bold leading-normal">Balance Over Time</p>
+<div class="flex gap-1 items-center">
+<p class="text-white/60 text-sm font-normal leading-normal">Last 30 Days</p>
+<p class="text-[#0bda76] text-sm font-medium leading-normal">+5.2%</p>
+</div>
+</div>
+<div class="flex min-h-[220px] flex-1 flex-col gap-8 py-4">
+<svg fill="none" height="100%" preserveaspectratio="none" viewbox="-3 0 478 150" width="100%" xmlns="http://www.w3.org/2000/svg">
+<path d="M0 109C18.1538 109 18.1538 21 36.3077 21C54.4615 21 54.4615 41 72.6154 41C90.7692 41 90.7692 93 108.923 93C127.077 93 127.077 33 145.231 33C163.385 33 163.385 101 181.538 101C199.692 101 199.692 61 217.846 61C236 61 236 45 254.154 45C272.308 45 272.308 121 290.462 121C308.615 121 308.615 149 326.769 149C344.923 149 344.923 1 363.077 1C381.231 1 381.231 81 399.385 81C417.538 81 417.538 129 435.692 129C453.846 129 453.846 25 472 25V149H0V109Z" fill="url(#paint0_linear_1_1)"></path>
+<path d="M0 109C18.1538 109 18.1538 21 36.3077 21C54.4615 21 54.4615 41 72.6154 41C90.7692 41 90.7692 93 108.923 93C127.077 93 127.077 33 145.231 33C163.385 33 163.385 101 181.538 101C199.692 101 199.692 61 217.846 61C236 61 236 45 254.154 45C272.308 45 272.308 121 290.462 121C308.615 121 308.615 149 326.769 149C344.923 149 344.923 1 363.077 1C381.231 1 381.231 81 399.385 81C417.538 81 417.538 129 435.692 129C453.846 129 453.846 25 472 25" stroke="#FFD700" stroke-linecap="round" stroke-width="3"></path>
+<defs>
+<lineargradient gradientunits="userSpaceOnUse" id="paint0_linear_1_1" x1="236" x2="236" y1="1" y2="149">
+<stop stop-color="#FFD700" stop-opacity="0.2"></stop>
+<stop offset="1" stop-color="#1a1121" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+</svg>
+</div>
+<div class="flex justify-around">
+<p class="text-white/50 text-[13px] font-bold leading-normal tracking-[0.015em]">Week 1</p>
+<p class="text-white/50 text-[13px] font-bold leading-normal tracking-[0.015em]">Week 2</p>
+<p class="text-white/50 text-[13px] font-bold leading-normal tracking-[0.015em]">Week 3</p>
+<p class="text-white/50 text-[13px] font-bold leading-normal tracking-[0.015em]">Week 4</p>
+</div>
+</div>
+<div class="flex flex-col justify-center gap-4 rounded-xl border border-white/10 p-6 bg-white/5">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#FFD700] text-4xl">verified_user</span>
+<h3 class="text-white text-lg font-bold">Protected by Smart Contracts</h3>
+</div>
+<p class="text-white/70 text-sm leading-relaxed">Your funds are secured in a smart contract-based escrow. Gladiators never have direct access to your wallet, ensuring your principal is always safe.</p>
+<a class="text-[#FFD700] text-sm font-bold hover:underline" href="#">Learn more about our security</a>
+</div>
+</div>
+<div class="rounded-xl border border-white/10 bg-white/5 overflow-hidden">
+<div class="p-6 border-b border-white/10">
+<h3 class="text-white text-lg font-bold">Transaction Ledger</h3>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-sm text-left text-white/70">
+<thead class="text-xs text-white/50 uppercase bg-white/5">
+<tr>
+<th class="px-6 py-3" scope="col">Date</th>
+<th class="px-6 py-3" scope="col">Type</th>
+<th class="px-6 py-3" scope="col">Amount</th>
+<th class="px-6 py-3" scope="col">Status</th>
+<th class="px-6 py-3" scope="col">Gladiator</th>
+</tr>
+</thead>
+<tbody>
+<tr class="border-b border-white/10">
+<td class="px-6 py-4 font-medium text-white">Oct 26, 2023</td>
+<td class="px-6 py-4">Allocation</td>
+<td class="px-6 py-4 font-medium text-white">$500.00</td>
+<td class="px-6 py-4"><span class="bg-green-900/50 text-green-300 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">Completed</span></td>
+<td class="px-6 py-4">Maximus V</td>
+</tr>
+<tr class="border-b border-white/10">
+<td class="px-6 py-4 font-medium text-white">Oct 25, 2023</td>
+<td class="px-6 py-4">Withdrawal</td>
+<td class="px-6 py-4 font-medium text-white">$1,200.00</td>
+<td class="px-6 py-4"><span class="bg-green-900/50 text-green-300 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">Completed</span></td>
+<td class="px-6 py-4">-</td>
+</tr>
+<tr class="border-b border-white/10">
+<td class="px-6 py-4 font-medium text-white">Oct 22, 2023</td>
+<td class="px-6 py-4">Deposit</td>
+<td class="px-6 py-4 font-medium text-white">$2,500.00</td>
+<td class="px-6 py-4"><span class="bg-green-900/50 text-green-300 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">Completed</span></td>
+<td class="px-6 py-4">-</td>
+</tr>
+<tr class="border-b border-white/10">
+<td class="px-6 py-4 font-medium text-white">Oct 21, 2023</td>
+<td class="px-6 py-4">Allocation</td>
+<td class="px-6 py-4 font-medium text-white">$1,000.00</td>
+<td class="px-6 py-4"><span class="bg-yellow-900/50 text-yellow-300 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">Pending</span></td>
+<td class="px-6 py-4">Spartacus II</td>
+</tr>
+<tr>
+<td class="px-6 py-4 font-medium text-white">Oct 19, 2023</td>
+<td class="px-6 py-4">Deposit</td>
+<td class="px-6 py-4 font-medium text-white">$5,000.00</td>
+<td class="px-6 py-4"><span class="bg-green-900/50 text-green-300 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">Completed</span></td>
+<td class="px-6 py-4">-</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+</body></html>

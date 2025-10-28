@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>YOLOSEUM - The Arena</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;family=Cinzel:wght@400..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#6A0DAD",
+              "background-light": "#f7f6f8",
+              "background-dark": "#1A1A1A",
+              "accent-gold": "#FFD700",
+              "accent-sand": "#C2B280"
+            },
+            fontFamily: {
+              "display": ["Manrope", "sans-serif"],
+              "heading": ["Cinzel", "serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-white">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-white/10 px-6 sm:px-10 lg:px-20 py-4 sticky top-0 bg-background-dark/80 backdrop-blur-sm z-10">
+<div class="flex items-center gap-4 text-white">
+<div class="size-8 text-primary">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<g>
+<path d="M24 4C12.96 4 4 12.96 4 24C4 35.04 12.96 44 24 44C35.04 44 44 35.04 44 24C44 12.96 35.04 4 24 4ZM24 34.8C18.6 34.8 14.16 30.36 14.16 24.96V20.16C14.16 19.32 14.88 18.6 15.72 18.6H19.08V15.24C19.08 14.4 19.8 13.68 20.64 13.68H27.36C28.2 13.68 28.92 14.4 28.92 15.24V18.6H32.28C33.12 18.6 33.84 19.32 33.84 20.16V24.96C33.84 30.36 29.4 34.8 24 34.8Z" fill="currentColor"></path>
+</g>
+</svg>
+</div>
+<h2 class="text-white text-xl font-bold tracking-widest font-heading">YOLOSEUM</h2>
+</div>
+<div class="hidden md:flex items-center gap-9">
+<a class="text-white text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Arena</a>
+<a class="text-white/70 text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">My Stable</a>
+<a class="text-white/70 text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Leaderboard</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 w-10 bg-white/5 text-white/70 hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="User profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD7HbeqVZXmkaFrF5H6-qMAWjPsgATlKySQfIrcPYKmucd4VAugQEii_jvS79R2uWxqrKahdzyXbQW1ZPYaekCceQV814Fi1tkzvgLpCN4wf3tNXMO8EID8QETvLH9iBsG2ZAxZxE7Iys3Xf_DaTXtYRwPk-9MMIhMe0sQYdOoMcBknoj1jncZD60eDIfThuHMANe1r6PrzNV_0-6tc3aZZIN-18iOcoL0J1x9MTQ1aEUc8MfZepLbkxiLIDc2Zas-eqzDm8yetoV80");'></div>
+</div>
+</header>
+<main class="px-6 sm:px-10 lg:px-20 flex flex-1 justify-center py-10">
+<div class="layout-content-container flex flex-col w-full max-w-6xl flex-1 gap-8">
+<div class="flex flex-wrap justify-between gap-4 items-center">
+<div class="flex min-w-72 flex-col gap-2">
+<p class="text-white text-5xl font-black font-heading tracking-wider">The Arena</p>
+<p class="text-accent-sand text-lg font-normal leading-normal">Choose Your Champion. Conquer the Markets.</p>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row justify-between gap-4 py-3 border-y border-white/10">
+<div class="flex flex-wrap gap-3">
+<button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors pl-4 pr-3">
+<p class="text-white text-sm font-medium leading-normal">Sort by 30d Profit</p>
+<span class="material-symbols-outlined text-white/70">arrow_drop_down</span>
+</button>
+<button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors pl-4 pr-3">
+<p class="text-white text-sm font-medium leading-normal">Sort by Win Rate</p>
+<span class="material-symbols-outlined text-white/70">arrow_drop_down</span>
+</button>
+<button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors pl-4 pr-3">
+<p class="text-white text-sm font-medium leading-normal">Filter by Risk Level</p>
+<span class="material-symbols-outlined text-white/70">arrow_drop_down</span>
+</button>
+</div>
+<div class="flex items-center gap-2">
+<div class="relative w-full sm:w-64">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-white/50">search</span>
+<input class="w-full h-10 rounded-lg bg-white/5 border-none pl-10 pr-4 text-white placeholder:text-white/50 focus:ring-2 focus:ring-primary/50 transition-shadow" placeholder="Search Gladiators..." type="text"/>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Gladiator Card 1 -->
+<div class="flex flex-col rounded-xl border border-accent-sand/20 bg-gradient-to-br from-white/[.03] to-transparent p-5 gap-5 transition-all hover:border-accent-sand/40 hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-1">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-4">
+<div class="bg-primary/20 rounded-lg p-2 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-4xl">shield</span>
+</div>
+<div>
+<p class="text-xl font-bold text-white">Spartacus Bot</p>
+<div class="flex items-center gap-1.5 text-accent-sand">
+<span class="material-symbols-outlined text-sm">military_tech</span>
+<p class="text-sm font-medium">Rank #1</p>
+</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-4 text-center">
+<div>
+<p class="text-xs text-white/60">30d Profit</p>
+<p class="text-2xl font-semibold text-green-400">+15.8%</p>
+</div>
+<div>
+<p class="text-xs text-white/60">Win Rate</p>
+<p class="text-2xl font-semibold text-white">82%</p>
+</div>
+<div>
+<p class="text-xs text-white/60">Followers</p>
+<p class="text-2xl font-semibold text-white">1.2k</p>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row gap-3">
+<button class="flex-1 flex h-11 items-center justify-center gap-2 rounded-lg bg-accent-gold text-black text-sm font-bold hover:bg-yellow-400 transition-colors">View Strategy</button>
+<button class="flex-1 flex h-11 items-center justify-center gap-2 rounded-lg bg-white/10 text-white text-sm font-bold hover:bg-white/20 transition-colors">Enlist</button>
+</div>
+</div>
+<!-- Gladiator Card 2 -->
+<div class="flex flex-col rounded-xl border border-accent-sand/20 bg-gradient-to-br from-white/[.03] to-transparent p-5 gap-5 transition-all hover:border-accent-sand/40 hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-1">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-4">
+<div class="bg-primary/20 rounded-lg p-2 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-4xl">security</span>
+</div>
+<div>
+<p class="text-xl font-bold text-white">Maximus Prime</p>
+<div class="flex items-center gap-1.5 text-accent-sand/80">
+<span class="material-symbols-outlined text-sm">military_tech</span>
+<p class="text-sm font-medium">Rank #2</p>
+</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-4 text-center">
+<div>
+<p class="text-xs text-white/60">30d Profit</p>
+<p class="text-2xl font-semibold text-green-400">+12.3%</p>
+</div>
+<div>
+<p class="text-xs text-white/60">Win Rate</p>
+<p class="text-2xl font-semibold text-white">75%</p>
+</div>
+<div>
+<p class="text-xs text-white/60">Followers</p>
+<p class="text-2xl font-semibold text-white">980</p>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row gap-3">
+<button class="flex-1 flex h-11 items-center justify-center gap-2 rounded-lg bg-accent-gold text-black text-sm font-bold hover:bg-yellow-400 transition-colors">View Strategy</button>
+<button class="flex-1 flex h-11 items-center justify-center gap-2 rounded-lg bg-white/10 text-white text-sm font-bold hover:bg-white/20 transition-colors">Enlist</button>
+</div>
+</div>
+<!-- Gladiator Card 3 -->
+<div class="flex flex-col rounded-xl border border-accent-sand/20 bg-gradient-to-br from-white/[.03] to-transparent p-5 gap-5 transition-all hover:border-accent-sand/40 hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-1">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-4">
+<div class="bg-primary/20 rounded-lg p-2 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-4xl">swords</span>
+</div>
+<div>
+<p class="text-xl font-bold text-white">Crixus Trader</p>
+<div class="flex items-center gap-1.5 text-accent-sand/80">
+<span class="material-symbols-outlined text-sm">military_tech</span>
+<p class="text-sm font-medium">Rank #3</p>
+</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-4 text-center">
+<div>
+<p class="text-xs text-white/60">30d Profit</p>
+<p class="text-2xl font-semibold text-green-400">+11.9%</p>
+</div>
+<div>
+<p class="text-xs text-white/60">Win Rate</p>
+<p class="text-2xl font-semibold text-white">88%</p>
+</div>
+<div>
+<p class="text-xs text-white/60">Followers</p>
+<p class="text-2xl font-semibold text-white">850</p>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row gap-3">
+<button class="flex-1 flex h-11 items-center justify-center gap-2 rounded-lg bg-accent-gold text-black text-sm font-bold hover:bg-yellow-400 transition-colors">View Strategy</button>
+<button class="flex-1 flex h-11 items-center justify-center gap-2 rounded-lg bg-white/10 text-white text-sm font-bold hover:bg-white/20 transition-colors">Enlist</button>
+</div>
+</div>
+<!-- Gladiator Card 4 -->
+<div class="flex flex-col rounded-xl border border-accent-sand/20 bg-gradient-to-br from-white/[.03] to-transparent p-5 gap-5 transition-all hover:border-accent-sand/40 hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-1">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-4">
+<div class="bg-primary/20 rounded-lg p-2 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-4xl">trending_up</span>
+</div>
+<div>
+<p class="text-xl font-bold text-white">Gannicus Gains</p>
+<div class="flex items-center gap-1.5 text-accent-sand/80">
+<span class="material-symbols-outlined text-sm">military_tech</span>
+<p class="text-sm font-medium">Rank #4</p>
+</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-4 text-center">
+<div>
+<p class="text-xs text-white/60">30d Profit</p>
+<p class="text-2xl font-semibold text-green-400">+9.5%</p>
+</div>
+<div>
+<p class="text-xs text-white/60">Win Rate</p>
+<p class="text-2xl font-semibold text-white">69%</p>
+</div>
+<div>
+<p class="text-xs text-white/60">Followers</p>
+<p class="text-2xl font-semibold text-white">760</p>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row gap-3">
+<button class="flex-1 flex h-11 items-center justify-center gap-2 rounded-lg bg-accent-gold text-black text-sm font-bold hover:bg-yellow-400 transition-colors">View Strategy</button>
+<button class="flex-1 flex h-11 items-center justify-center gap-2 rounded-lg bg-white/10 text-white text-sm font-bold hover:bg-white/20 transition-colors">Enlist</button>
+</div>
+</div>
+<!-- Gladiator Card 5 -->
+<div class="flex flex-col rounded-xl border border-accent-sand/20 bg-gradient-to-br from-white/[.03] to-transparent p-5 gap-5 transition-all hover:border-accent-sand/40 hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-1">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-4">
+<div class="bg-primary/20 rounded-lg p-2 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-4xl">insights</span>
+</div>
+<div>
+<p class="text-xl font-bold text-white">Aurelius Alpha</p>
+<div class="flex items-center gap-1.5 text-accent-sand/80">
+<span class="material-symbols-outlined text-sm">military_tech</span>
+<p class="text-sm font-medium">Rank #5</p>
+</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-4 text-center">
+<div>
+<p class="text-xs text-white/60">30d Profit</p>
+<p class="text-2xl font-semibold text-green-400">+8.2%</p>
+</div>
+<div>
+<p class="text-xs text-white/60">Win Rate</p>
+<p class="text-2xl font-semibold text-white">91%</p>
+</div>
+<div>
+<p class="text-xs text-white/60">Followers</p>
+<p class="text-2xl font-semibold text-white">720</p>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row gap-3">
+<button class="flex-1 flex h-11 items-center justify-center gap-2 rounded-lg bg-accent-gold text-black text-sm font-bold hover:bg-yellow-400 transition-colors">View Strategy</button>
+<button class="flex-1 flex h-11 items-center justify-center gap-2 rounded-lg bg-white/10 text-white text-sm font-bold hover:bg-white/20 transition-colors">Enlist</button>
+</div>
+</div>
+<!-- Gladiator Card 6 -->
+<div class="flex flex-col rounded-xl border border-accent-sand/20 bg-gradient-to-br from-white/[.03] to-transparent p-5 gap-5 transition-all hover:border-accent-sand/40 hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-1">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-4">
+<div class="bg-primary/20 rounded-lg p-2 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-4xl">verified_user</span>
+</div>
+<div>
+<p class="text-xl font-bold text-white">Verus Vector</p>
+<div class="flex items-center gap-1.5 text-accent-sand/80">
+<span class="material-symbols-outlined text-sm">military_tech</span>
+<p class="text-sm font-medium">Rank #6</p>
+</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-4 text-center">
+<div>
+<p class="text-xs text-white/60">30d Profit</p>
+<p class="text-2xl font-semibold text-green-400">+7.9%</p>
+</div>
+<div>
+<p class="text-xs text-white/60">Win Rate</p>
+<p class="text-2xl font-semibold text-white">85%</p>
+</div>
+<div>
+<p class="text-xs text-white/60">Followers</p>
+<p class="text-2xl font-semibold text-white">650</p>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row gap-3">
+<button class="flex-1 flex h-11 items-center justify-center gap-2 rounded-lg bg-accent-gold text-black text-sm font-bold hover:bg-yellow-400 transition-colors">View Strategy</button>
+<button class="flex-1 flex h-11 items-center justify-center gap-2 rounded-lg bg-white/10 text-white text-sm font-bold hover:bg-white/20 transition-colors">Enlist</button>
+</div>
+</div>
+</div>
+<div class="flex justify-center pt-8">
+<div class="flex items-center gap-2 text-white">
+<button class="flex h-9 w-9 items-center justify-center rounded-lg bg-white/10 hover:bg-white/20 transition-colors">
+<span class="material-symbols-outlined text-lg">chevron_left</span>
+</button>
+<button class="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-white">1</button>
+<button class="flex h-9 w-9 items-center justify-center rounded-lg hover:bg-white/10 transition-colors">2</button>
+<button class="flex h-9 w-9 items-center justify-center rounded-lg hover:bg-white/10 transition-colors">3</button>
+<span>...</span>
+<button class="flex h-9 w-9 items-center justify-center rounded-lg hover:bg-white/10 transition-colors">10</button>
+<button class="flex h-9 w-9 items-center justify-center rounded-lg bg-white/10 hover:bg-white/20 transition-colors">
+<span class="material-symbols-outlined text-lg">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+</body></html>

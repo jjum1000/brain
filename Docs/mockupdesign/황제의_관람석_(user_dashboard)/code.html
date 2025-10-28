@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>YOLOSEUM - Emperor's Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings:
+            'FILL' 1,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4B0082",
+                        "accent": "#FFD700",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#1a1a1a",
+                        "surface-dark": "#242424",
+                        "border-dark": "#3a3a3a",
+                        "text-secondary-dark": "#B0B0B0",
+                        "positive": "#0bda76",
+                        "negative": "#ff4d4d",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-white">
+<div class="relative flex min-h-screen w-full">
+<!-- SideNavBar -->
+<aside class="flex flex-col w-64 bg-[#242424] border-r border-[#3a3a3a]">
+<div class="flex items-center gap-3 p-4 border-b border-[#3a3a3a]">
+<img class="h-10 w-10" data-alt="YOLOSEUM Gold Laurel Wreath Logo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUOjfBMv27hMe8QjP1eZVkUm46hRME1DqFAoWVTZu1sxmc0t4jus1eUqEH88BSirkO0Hl_D79KCp90qqQt_Hjron9QshtKPvf1abjQsOoh0VzU0izWz4kfPN84eiscPynsrIpRv86He03kt5EcEifRH9u7OcoV-g4l_rEpWd1oXBib7xBcmPo1w639PEPZ-ECX8tiI5YRuhRPp-9dDv5wLOuqcWvJXUaPe935FqUX-7SjEafP_WCAKMj08TazTOQLD7VHDjheXGJwA"/>
+<span class="text-xl font-bold text-accent">YOLOSEUM</span>
+</div>
+<div class="flex flex-col justify-between flex-1 p-4">
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary">
+<span class="material-symbols-outlined fill">dashboard</span>
+<p class="text-sm font-medium leading-normal">Dashboard</p>
+</div>
+<div class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined">swords</span>
+<p class="text-sm font-medium leading-normal">Gladiator Arena</p>
+</div>
+<div class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined">storefront</span>
+<p class="text-sm font-medium leading-normal">Marketplace</p>
+</div>
+<div class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined">leaderboard</span>
+<p class="text-sm font-medium leading-normal">Leaderboard</p>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined">settings</span>
+<p class="text-sm font-medium leading-normal">Settings</p>
+</div>
+<div class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined">help</span>
+<p class="text-sm font-medium leading-normal">Help</p>
+</div>
+<div class="flex gap-3 pt-4 mt-4 border-t border-[#3a3a3a]">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Emperor Aurelius Profile Picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDsmKwB3FpEdbV9rtYG2qUarqxNaAjwkvtNfzOyfPe9gSMmfUNmI9he5OHQjB2l95NmuozY2CEYJmcTHIZNrf3JsJdbnTO3WjTmb_gsOE7oOA-LXxiLSD_5RsJ9oAltrtkUgVK_8xZ1kdkQWSjTXtXUQ54gNqAtfXqGDmM1jsM3sYA8zNtiTFXu20INKAi0l1BFV9vUHuoitFww5y5DMh7gOold7eYuEnCu-8GhB66ZsFZ_XMrB3rNJ1Yv3nvGRlWDWAlGNXl0LjomN");'></div>
+<div class="flex flex-col">
+<h1 class="text-white text-base font-medium leading-normal">Emperor Aurelius</h1>
+<p class="text-text-secondary-dark text-sm font-normal leading-normal">YOLOSEUM Maximus</p>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 overflow-y-auto">
+<div class="p-8">
+<!-- PageHeading -->
+<div class="flex flex-wrap justify-between gap-3 mb-6">
+<p class="text-white text-4xl font-black leading-tight tracking-[-0.033em] min-w-72">Greetings, Emperor Aurelius</p>
+</div>
+<!-- Stats -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+<div class="flex flex-col gap-2 rounded-xl p-6 bg-surface-dark border border-border-dark">
+<p class="text-text-secondary-dark text-base font-medium leading-normal">Total Portfolio Value</p>
+<p class="text-white tracking-light text-3xl font-bold leading-tight">$1,250,680.45</p>
+<p class="text-positive text-base font-medium leading-normal">+2.1%</p>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-6 bg-surface-dark border border-border-dark">
+<p class="text-text-secondary-dark text-base font-medium leading-normal">24h Profit/Loss</p>
+<p class="text-white tracking-light text-3xl font-bold leading-tight">+$15,230.10</p>
+<p class="text-positive text-base font-medium leading-normal">+1.2%</p>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-6 bg-surface-dark border border-border-dark">
+<p class="text-text-secondary-dark text-base font-medium leading-normal">All-Time Return</p>
+<p class="text-white tracking-light text-3xl font-bold leading-tight">+$250,680.45</p>
+<p class="text-positive text-base font-medium leading-normal">+25.0%</p>
+</div>
+</div>
+<!-- Charts -->
+<div class="rounded-xl p-6 bg-surface-dark border border-border-dark mb-8">
+<div class="flex flex-wrap justify-between items-start gap-4 mb-4">
+<div>
+<p class="text-text-secondary-dark text-base font-medium leading-normal">Portfolio Performance</p>
+<p class="text-white tracking-light text-4xl font-bold leading-tight truncate">$1,250,680.45</p>
+<div class="flex gap-2">
+<p class="text-text-secondary-dark text-base font-normal leading-normal">Last 30 Days</p>
+<p class="text-positive text-base font-medium leading-normal">+5.8%</p>
+</div>
+</div>
+<div class="flex gap-1 bg-[#3a3a3a] p-1 rounded-lg">
+<button class="px-3 py-1 text-sm rounded-md text-white/50 hover:text-white transition-colors">24h</button>
+<button class="px-3 py-1 text-sm rounded-md text-white/50 hover:text-white transition-colors">7d</button>
+<button class="px-3 py-1 text-sm rounded-md bg-primary text-white font-semibold transition-colors">30d</button>
+<button class="px-3 py-1 text-sm rounded-md text-white/50 hover:text-white transition-colors">All</button>
+</div>
+</div>
+<div class="flex h-[250px] flex-col">
+<svg fill="none" height="100%" preserveaspectratio="none" viewbox="0 0 475 150" width="100%" xmlns="http://www.w3.org/2000/svg">
+<path d="M0 109C18.1538 109 18.1538 21 36.3077 21C54.4615 21 54.4615 41 72.6154 41C90.7692 41 90.7692 93 108.923 93C127.077 93 127.077 33 145.231 33C163.385 33 163.385 101 181.538 101C199.692 101 199.692 61 217.846 61C236 61 236 45 254.154 45C272.308 45 272.308 121 290.462 121C308.615 121 308.615 149 326.769 149C344.923 149 344.923 1 363.077 1C381.231 1 381.231 81 399.385 81C417.538 81 417.538 129 435.692 129C453.846 129 453.846 25 472 25V149H0V109Z" fill="url(#paint0_linear_chart)"></path>
+<path d="M0 109C18.1538 109 18.1538 21 36.3077 21C54.4615 21 54.4615 41 72.6154 41C90.7692 41 90.7692 93 108.923 93C127.077 93 127.077 33 145.231 33C163.385 33 163.385 101 181.538 101C199.692 101 199.692 61 217.846 61C236 61 236 45 254.154 45C272.308 45 272.308 121 290.462 121C308.615 121 308.615 149 326.769 149C344.923 149 344.923 1 363.077 1C381.231 1 381.231 81 399.385 81C417.538 81 417.538 129 435.692 129C453.846 129 453.846 25 472 25" stroke="#4B0082" stroke-linecap="round" stroke-width="3"></path>
+<defs>
+<lineargradient gradientunits="userSpaceOnUse" id="paint0_linear_chart" x1="236" x2="236" y1="1" y2="149">
+<stop stop-color="#4B0082" stop-opacity="0.4"></stop>
+<stop offset="1" stop-color="#4B0082" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+</svg>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Active Gladiators & Grape Harvest -->
+<div class="lg:col-span-2 flex flex-col gap-8">
+<!-- SectionHeader: Active Gladiators -->
+<div class="bg-surface-dark border border-border-dark rounded-xl">
+<h2 class="text-white text-xl font-bold leading-tight tracking-[-0.015em] px-6 pt-5 pb-4 border-b border-border-dark">Active Gladiators</h2>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="text-xs text-text-secondary-dark uppercase">
+<tr>
+<th class="px-6 py-3" scope="col">Gladiator</th>
+<th class="px-6 py-3" scope="col">Asset</th>
+<th class="px-6 py-3" scope="col">24h P/L</th>
+<th class="px-6 py-3" scope="col"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="border-b border-border-dark">
+<td class="px-6 py-4 font-medium text-white whitespace-nowrap">
+<div class="flex items-center gap-3">
+<img class="h-8 w-8 rounded-full" data-alt="Gladiator Spartacus Bot Icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCoAMcYV7IVsJKmsepKGnAOBuGHJ1-xr2Wbw-O3tlEnEZE1FKZYc4R2Pla6bvny1OjzLRMu2gAXRa278btvFt0toNOQBoS19i_lPha0aH8ozFLtiuoE-vddPMjM2p-8QBeS3KM5y6Jj20ZGCZOvXKfgt54Iw4VN-fHko4dJai0xPTVm3vfPLMzHQxGBs1CXLPpqk05Kr9GLVUHNEmL6khbd07ddE5BENmDET6oCTTTllG8Yt44f9UGvLp6EZBuEQlCH2AwxNgkkjiEj"/>
+<span>Spartacus</span>
+<span class="material-symbols-outlined text-accent text-base" title="Verified Gladiator">verified</span>
+</div>
+</td>
+<td class="px-6 py-4 text-text-secondary-dark">BTC/USDT</td>
+<td class="px-6 py-4 text-positive font-semibold">+$1,230.50</td>
+<td class="px-6 py-4 text-right"><button class="text-primary font-bold hover:underline">View</button></td>
+</tr>
+<tr class="border-b border-border-dark">
+<td class="px-6 py-4 font-medium text-white whitespace-nowrap">
+<div class="flex items-center gap-3">
+<img class="h-8 w-8 rounded-full" data-alt="Gladiator Maximus Bot Icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDc_IcAMgy5OJU5puCyMdiiSJuJFphMPc2NSeUnmwR593m-8LsTb4YwIwmKoQ4_BjgPszAoTjovdWkuDDfOLr_jX6eC__IBSLg06AfMw-jprIaiEoNycZkIBIuXoREe7-4dPNf-dHoj2hlIXd8gf3lzGvx125JZ0-HVgSAi_Su8wzuHXwcxAtBg9Agu9UUUsEZtbtigJNd1KKywCYu_wI6tKrDbJvPNLj16yR_YsDM3surTjtwUEY_xvKxrOOS8jViW27qrvCfOZJbh"/>
+<span>Maximus</span>
+<span class="material-symbols-outlined text-accent text-base" title="Verified Gladiator">verified</span>
+</div>
+</td>
+<td class="px-6 py-4 text-text-secondary-dark">ETH/USDT</td>
+<td class="px-6 py-4 text-negative font-semibold">-$245.12</td>
+<td class="px-6 py-4 text-right"><button class="text-primary font-bold hover:underline">View</button></td>
+</tr>
+<tr class="border-b border-border-dark">
+<td class="px-6 py-4 font-medium text-white whitespace-nowrap">
+<div class="flex items-center gap-3">
+<img class="h-8 w-8 rounded-full" data-alt="Gladiator Crixus Bot Icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCX-X5nbQUT99jOLnv5rOgp9UkteKb42VgDUSWZUovRhzEMYGCjeFNpwh_n30I5PZId0reXA7SndmXIDsj5Fte19JwiaGdMraaj_buLahO_-B3_TIjohYNwzhDNewy7z5bjwrkyyxLfViPKMGpOJkVWlHO_aP2Wtwl7IoO3qlFKUYY_ygl-yVbiV44Gi1hXfEEfKa6X3O3-gHPeIZJxcaLM0j_68F8gUqAaT5I2T1bqIzND_-gDASRTzWz3ISbCsZO7a_y3QXi0HgSs"/>
+<span>Crixus</span>
+</div>
+</td>
+<td class="px-6 py-4 text-text-secondary-dark">SOL/USDT</td>
+<td class="px-6 py-4 text-positive font-semibold">+$876.99</td>
+<td class="px-6 py-4 text-right"><button class="text-primary font-bold hover:underline">View</button></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- Grape Harvest (Dividends) Section -->
+<div class="bg-surface-dark border border-border-dark rounded-xl h-fit">
+<h2 class="text-white text-xl font-bold leading-tight tracking-[-0.015em] px-6 pt-5 pb-4 border-b border-border-dark">Grape Harvest</h2>
+<div class="p-6 flex flex-col gap-4">
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-3">
+<div class="p-2 bg-accent/20 rounded-full">
+<span class="material-symbols-outlined text-accent">spa</span>
+</div>
+<div>
+<p class="font-medium">Staking Rewards</p>
+<p class="text-sm text-text-secondary-dark">Oct 24, 2023</p>
+</div>
+</div>
+<p class="text-positive font-bold">+$45.80</p>
+</div>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-3">
+<div class="p-2 bg-accent/20 rounded-full">
+<span class="material-symbols-outlined text-accent">spa</span>
+</div>
+<div>
+<p class="font-medium">ETH Dividend</p>
+<p class="text-sm text-text-secondary-dark">Oct 22, 2023</p>
+</div>
+</div>
+<p class="text-positive font-bold">+$112.50</p>
+</div>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-3">
+<div class="p-2 bg-accent/20 rounded-full">
+<span class="material-symbols-outlined text-accent">spa</span>
+</div>
+<div>
+<p class="font-medium">Staking Rewards</p>
+<p class="text-sm text-text-secondary-dark">Oct 17, 2023</p>
+</div>
+</div>
+<p class="text-positive font-bold">+$42.15</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Gladiator Chronicles -->
+<div class="mt-8 bg-surface-dark border border-border-dark rounded-xl">
+<h2 class="text-white text-xl font-bold leading-tight tracking-[-0.015em] px-6 pt-5 pb-4 border-b border-border-dark">Gladiator Chronicles</h2>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="text-xs text-text-secondary-dark uppercase">
+<tr>
+<th class="px-6 py-3" scope="col">Gladiator</th>
+<th class="px-6 py-3" scope="col">Date</th>
+<th class="px-6 py-3" scope="col">Asset Pair</th>
+<th class="px-6 py-3" scope="col">Type</th>
+<th class="px-6 py-3" scope="col">Amount</th>
+<th class="px-6 py-3" scope="col">Profit/Loss</th>
+</tr>
+</thead>
+<tbody>
+<tr class="border-b border-border-dark">
+<td class="px-6 py-4 font-medium text-white whitespace-nowrap">Spartacus</td>
+<td class="px-6 py-4 text-text-secondary-dark">2023-10-25 14:30</td>
+<td class="px-6 py-4 text-text-secondary-dark">BTC/USDT</td>
+<td class="px-6 py-4"><span class="bg-positive/20 text-positive text-xs font-medium me-2 px-2.5 py-0.5 rounded-full">BUY</span></td>
+<td class="px-6 py-4 text-text-secondary-dark">0.05 BTC</td>
+<td class="px-6 py-4 text-positive font-semibold">+$250.75</td>
+</tr>
+<tr class="border-b border-border-dark">
+<td class="px-6 py-4 font-medium text-white whitespace-nowrap">Maximus</td>
+<td class="px-6 py-4 text-text-secondary-dark">2023-10-25 11:15</td>
+<td class="px-6 py-4 text-text-secondary-dark">ETH/USDT</td>
+<td class="px-6 py-4"><span class="bg-negative/20 text-negative text-xs font-medium me-2 px-2.5 py-0.5 rounded-full">SELL</span></td>
+<td class="px-6 py-4 text-text-secondary-dark">1.2 ETH</td>
+<td class="px-6 py-4 text-negative font-semibold">-$88.40</td>
+</tr>
+<tr class="border-b border-border-dark">
+<td class="px-6 py-4 font-medium text-white whitespace-nowrap">Crixus</td>
+<td class="px-6 py-4 text-text-secondary-dark">2023-10-24 22:00</td>
+<td class="px-6 py-4 text-text-secondary-dark">SOL/USDT</td>
+<td class="px-6 py-4"><span class="bg-positive/20 text-positive text-xs font-medium me-2 px-2.5 py-0.5 rounded-full">BUY</span></td>
+<td class="px-6 py-4 text-text-secondary-dark">50 SOL</td>
+<td class="px-6 py-4 text-positive font-semibold">+$120.00</td>
+</tr>
+<tr class="border-b border-border-dark">
+<td class="px-6 py-4 font-medium text-white whitespace-nowrap">Spartacus</td>
+<td class="px-6 py-4 text-text-secondary-dark">2023-10-24 09:45</td>
+<td class="px-6 py-4 text-text-secondary-dark">BTC/USDT</td>
+<td class="px-6 py-4"><span class="bg-negative/20 text-negative text-xs font-medium me-2 px-2.5 py-0.5 rounded-full">SELL</span></td>
+<td class="px-6 py-4 text-text-secondary-dark">0.02 BTC</td>
+<td class="px-6 py-4 text-positive font-semibold">+$95.30</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>
