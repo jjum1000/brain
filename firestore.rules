@@ -1,0 +1,118 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    /**
+     * Utility Functions
+     */
+
+    // 인증된 사용자 확인
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    // 특정 사용자인지 확인
+    function isUser(uid) {
+      return request.auth.uid == uid;
+    }
+
+    // 관리자인지 확인
+    function isAdmin() {
+      return request.auth.uid in get(/databases/$(database)/documents/admin/users).data.admins;
+    }
+
+    // 사용자 자신의 문서인지 확인
+    function isOwnDoc(uid) {
+      return isUser(uid) || isAdmin();
+    }
+
+    /**
+     * Collection Rules
+     */
+
+    // Users Collection
+    // 자신의 문서는 자유롭게 읽고 쓸 수 있고, 관리자도 접근 가능
+    match /users/{userId} {
+      allow read: if isAuth() && (isUser(userId) || isAdmin());
+      allow create: if isUser(userId);
+      allow update, delete: if isUser(userId) || isAdmin();
+    }
+
+    // Traders Collection
+    // 검증된 트레이더는 공개 읽기 가능
+    match /traders/{traderId} {
+      allow read: if true; // 공개
+      allow create: if isAuth(); // 인증된 사용자만 트레이더 신청
+      allow update: if isUser(traderId) || isAdmin(); // 본인 또는 관리자만 수정
+      allow delete: if isAdmin(); // 관리자만 삭제
+
+      // Trader의 Performance Sub-collection
+      match /performance/{docId} {
+        allow read: if true; // 공개
+        allow write: if isUser(traderId) || isAdmin(); // 본인만 작성
+      }
+    }
+
+    // Strategies Collection
+    // 전략은 공개 읽기 가능, 작성자는 자유 수정
+    match /strategies/{strategyId} {
+      allow read: if true; // 공개
+      allow create: if isAuth(); // 인증된 사용자만 전략 생성
+      allow update: if isUser(resource.data.traderId) || isAdmin(); // 작성자만 수정
+      allow delete: if isUser(resource.data.traderId) || isAdmin(); // 작성자만 삭제
+
+      // Strategy의 Trades Sub-collection
+      match /trades/{tradeId} {
+        allow read: if true; // 공개
+        allow write: if isUser(resource.data.traderId) || isAdmin(); // 트레이더만 작성
+      }
+
+      // Strategy의 Metrics Sub-collection
+      match /metrics/{metricId} {
+        allow read: if true; // 공개
+        allow write: if isUser(resource.data.traderId) || isAdmin(); // 트레이더만 작성
+      }
+    }
+
+    // Leaderboard Collection
+    // 공개 읽기, 시스템(관리자)만 쓰기
+    match /leaderboard/{document=**} {
+      allow read: if true; // 공개
+      allow write: if isAdmin(); // 관리자만 쓰기
+    }
+
+    // Supporters Collection
+    // 개인 정보 - 자신 또는 관리자만 접근
+    match /supporters/{supportId} {
+      allow read: if isUser(resource.data.userId) || isUser(resource.data.traderId) || isAdmin();
+      allow write: if isUser(resource.data.userId) || isAdmin();
+    }
+
+    // Transactions Collection
+    // 개인 정보 - 자신 또는 관리자만 접근
+    match /transactions/{txId} {
+      allow read: if isUser(resource.data.userId) || isAdmin();
+      allow write: if isUser(resource.data.userId) || isAdmin();
+    }
+
+    // Rankings Collection
+    // 공개 읽기, 관리자만 쓰기
+    match /rankings/{rankingId} {
+      allow read: if true; // 공개
+      allow write: if isAdmin(); // 관리자만 쓰기
+    }
+
+    // Reviews Collection
+    // 공개 읽기, 인증된 사용자는 자신의 리뷰만 수정 가능
+    match /reviews/{reviewId} {
+      allow read: if true; // 공개
+      allow create: if isAuth(); // 인증된 사용자만 리뷰 작성
+      allow update, delete: if isUser(resource.data.reviewerId) || isAdmin(); // 작성자만 수정
+    }
+
+    // Admin Collection
+    // 관리자만 접근
+    match /admin/{document=**} {
+      allow read, write: if isAdmin();
+    }
+  }
+}
