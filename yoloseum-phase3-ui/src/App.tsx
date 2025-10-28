@@ -5,6 +5,8 @@ import { Dashboard } from '@/components/pages/Dashboard';
 import { Leaderboard } from '@/components/pages/Leaderboard';
 import { Traders } from '@/components/pages/Traders';
 import { TraderDetail } from '@/components/pages/TraderDetail';
+import { Profile } from '@/components/pages/Profile';
+import { Settings } from '@/components/pages/Settings';
 import { NotFound } from '@/components/pages/NotFound';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -132,6 +134,8 @@ function AppContent() {
           <Route path="/leaderboard" element={<Leaderboard />} />
           <Route path="/traders" element={<Traders />} />
           <Route path="/trader/:id" element={<TraderDetail />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/settings" element={<Settings />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Layout>
