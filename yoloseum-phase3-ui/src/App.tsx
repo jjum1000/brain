@@ -19,6 +19,7 @@ import {
   Zap,
   Target,
   Shield,
+  Loader2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -34,6 +35,8 @@ import {
 } from '@/components/ui/table';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
+import { AuthProvider } from '@/context/AuthContext';
+import { useAuth } from '@/hooks/useAuth';
 
 type PageType = 'home' | 'dashboard' | 'leaderboard' | 'traders' | 'profile';
 
@@ -57,10 +60,10 @@ interface Trader {
   rank: number;
 }
 
-export default function App() {
+function AppContent() {
   const [currentPage, setCurrentPage] = useState<PageType>('home');
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { user, loading, signOut, signInWithGoogle } = useAuth();
 
   const mockTransactions: Transaction[] = [
     {
@@ -188,18 +191,23 @@ export default function App() {
           </nav>
 
           <div className="flex items-center gap-4">
-            {isAuthenticated ? (
-              <Button
-                onClick={() => setIsAuthenticated(false)}
-                variant="outline"
-                className="hidden md:flex items-center gap-2 border-slate-700 hover:bg-slate-800 hover:text-amber-500"
-              >
-                <LogOut className="h-4 w-4" />
-                Sign Out
-              </Button>
+            {loading ? (
+              <Loader2 className="h-4 w-4 animate-spin text-amber-500" />
+            ) : user ? (
+              <div className="hidden md:flex items-center gap-4">
+                <span className="text-sm text-slate-300">{user.displayName || user.email}</span>
+                <Button
+                  onClick={() => signOut()}
+                  variant="outline"
+                  className="items-center gap-2 border-slate-700 hover:bg-slate-800 hover:text-amber-500"
+                >
+                  <LogOut className="h-4 w-4" />
+                  Sign Out
+                </Button>
+              </div>
             ) : (
               <Button
-                onClick={() => setIsAuthenticated(true)}
+                onClick={() => signInWithGoogle()}
                 className="hidden md:flex items-center gap-2 bg-amber-600 hover:bg-amber-700"
               >
                 <LogIn className="h-4 w-4" />
@@ -238,25 +246,33 @@ export default function App() {
                 );
               })}
               <Separator className="bg-slate-800" />
-              {isAuthenticated ? (
-                <Button
-                  onClick={() => {
-                    setIsAuthenticated(false);
-                    setIsMobileMenuOpen(false);
-                  }}
-                  variant="outline"
-                  className="justify-start gap-2 border-slate-700 hover:bg-slate-800 hover:text-amber-500"
-                >
-                  <LogOut className="h-4 w-4" />
-                  Sign Out
-                </Button>
+              {loading ? (
+                <div className="flex items-center gap-2 text-slate-300">
+                  <Loader2 className="h-4 w-4 animate-spin text-amber-500" />
+                  Loading...
+                </div>
+              ) : user ? (
+                <div className="space-y-2">
+                  <p className="text-sm text-slate-300 px-2">{user.displayName || user.email}</p>
+                  <Button
+                    onClick={() => {
+                      signOut();
+                      setIsMobileMenuOpen(false);
+                    }}
+                    variant="outline"
+                    className="justify-start gap-2 border-slate-700 hover:bg-slate-800 hover:text-amber-500 w-full"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Sign Out
+                  </Button>
+                </div>
               ) : (
                 <Button
                   onClick={() => {
-                    setIsAuthenticated(true);
+                    signInWithGoogle();
                     setIsMobileMenuOpen(false);
                   }}
-                  className="justify-start gap-2 bg-amber-600 hover:bg-amber-700"
+                  className="justify-start gap-2 bg-amber-600 hover:bg-amber-700 w-full"
                 >
                   <LogIn className="h-4 w-4" />
                   Sign In
@@ -721,5 +737,13 @@ export default function App() {
       {currentPage === 'traders' && renderTraders()}
       {currentPage === 'profile' && renderProfile()}
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }
