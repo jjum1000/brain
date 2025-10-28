@@ -3,6 +3,8 @@ import { AuthProvider } from '@/context/AuthContext';
 import { Layout } from '@/components/Layout';
 import { Dashboard } from '@/components/pages/Dashboard';
 import { Leaderboard } from '@/components/pages/Leaderboard';
+import { Traders } from '@/components/pages/Traders';
+import { TraderDetail } from '@/components/pages/TraderDetail';
 import { NotFound } from '@/components/pages/NotFound';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -128,6 +130,8 @@ function AppContent() {
           <Route path="/" element={<HomePage />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/leaderboard" element={<Leaderboard />} />
+          <Route path="/traders" element={<Traders />} />
+          <Route path="/trader/:id" element={<TraderDetail />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Layout>
