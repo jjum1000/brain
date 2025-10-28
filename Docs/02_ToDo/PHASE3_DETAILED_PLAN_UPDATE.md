@@ -241,7 +241,7 @@ Phase 3 (UI/UX 개발):          🟢 35%
 - [x] Firebase config 입력
 - [x] Firebase SDK 설치 (firebase v12.4.0)
 
-### Firebase 인증 시스템 - 🟢 진행 중
+### Firebase 인증 시스템 - ✅ 완료
 - [x] src/types/auth.ts 완료
 - [x] src/lib/firebase.ts 완료 (Firebase 초기화)
 - [x] src/context/AuthContext.tsx 완료 (상태 관리)
@@ -250,10 +250,11 @@ Phase 3 (UI/UX 개발):          🟢 35%
 - [x] Google OAuth 통합
 - [x] Discord OAuth 통합
 - [x] App.tsx에 AuthProvider 통합
-- [ ] 로그인 폼 UI 작성
-- [ ] 회원가입 폼 UI 작성
-- [ ] 폼 검증 (React Hook Form + Zod)
-- [ ] 에러 처리 및 피드백
+- [x] 로그인 폼 UI 작성 (LoginDialog)
+- [x] 회원가입 폼 UI 작성 (SignupDialog)
+- [x] 비밀번호 리셋 폼 UI 작성 (ForgotPasswordDialog)
+- [x] 폼 검증 (React Hook Form + Zod)
+- [x] 에러 처리 및 피드백
 
 ### Firebase 실제 데이터 연동
 - [ ] Firestore에서 사용자 데이터 로드
@@ -263,24 +264,71 @@ Phase 3 (UI/UX 개발):          🟢 35%
 
 ---
 
-## 📈 Week 2 진행도
+## 📈 Week 2 진행도 (완료)
 
 ```
 Firebase 설정:        ✅ 100%
 인증 Context:        ✅ 100%
 OAuth 통합:          ✅ 100%
 App 통합:            ✅ 100%
+인증 UI 폼:          ✅ 100% (NEW)
+  ├─ LoginDialog
+  ├─ SignupDialog
+  └─ ForgotPasswordDialog
+Zod 검증 스키마:     ✅ 100% (NEW)
+App.tsx 통합:        ✅ 100% (업데이트됨)
 
 빌드 상태:           ✅ 성공 (TypeScript 오류 없음)
-번들 크기:           747KB (최소화됨)
+번들 크기:           875KB (Form 컴포넌트 추가)
 
-남은 작업:           로그인/회원가입 폼 UI + 데이터 연동
+다음 작업:           Firestore 데이터 연동 (Hooks 구현)
 ```
+
+### 📋 Week 2 완료 체크리스트
+
+✅ **Authentication 백엔드 (이전 세션)**
+- Firebase 초기화 및 설정
+- AuthContext 구현
+- useAuth 커스텀 훅
+- Email/Password + Google/Discord OAuth
+
+✅ **Authentication UI (이 세션)**
+- LoginDialog 컴포넌트
+  - Email/Password 폼
+  - Google/Discord OAuth 버튼
+  - "Forgot password?" 링크
+  - "Sign up" 링크
+  - 에러 메시지 표시
+  - 로딩 상태
+
+- SignupDialog 컴포넌트
+  - Display name + Email + Password 입력
+  - 비밀번호 확인
+  - Terms of service 체크박스
+  - OAuth 옵션
+  - 폼 검증
+
+- ForgotPasswordDialog 컴포넌트
+  - 이메일 입력
+  - 성공 메시지
+  - Back to login 링크
+
+✅ **Form Validation (Zod)**
+- loginSchema: Email + Password
+- signupSchema: Display name + Email + Password + Confirmation
+- resetPasswordSchema: Email
+- Password 요구사항: 8+ chars, uppercase, lowercase, number
+
+✅ **App.tsx 통합**
+- Dialog 상태 관리 (3개 다이얼로그)
+- 헤더 Sign In 버튼 → LoginDialog
+- 모바일 메뉴 Sign In → LoginDialog
+- Dialog 네비게이션 (로그인 ↔ 회원가입, 로그인 ↔ 비밀번호 리셋)
 
 ---
 
-**작성**: Claude AI
-**상태**: 🟢 Phase 3 Week 2 진행 중 (인증 시스템 구현 완료)
-**다음**: 로그인/회원가입 폼 UI 작성 및 Firestore 데이터 연동
+**작성**: Claude AI (마지막 업데이트: 2025년 10월 29일)
+**상태**: ✅ Phase 3 Week 2 - 인증 UI 완성
+**다음**: Week 2 계속 - Firestore 데이터 타입 및 커스텀 훅 구현
 
-🚀 **Firebase 인증 시스템 완전히 구현됨! 이제 UI 폼과 데이터 연동만 남음**
+🚀 **인증 UI가 완전히 구현됨! 다음은 실제 Firestore 데이터를 Dashboard에 연결**
