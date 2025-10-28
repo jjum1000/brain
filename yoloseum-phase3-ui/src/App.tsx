@@ -9,6 +9,7 @@ import { Profile } from '@/components/pages/Profile';
 import { Settings } from '@/components/pages/Settings';
 import { Strategies } from '@/components/pages/Strategies';
 import { StrategyDetail } from '@/components/pages/StrategyDetail';
+import { Portfolio } from '@/components/pages/Portfolio';
 import { NotFound } from '@/components/pages/NotFound';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -140,6 +141,7 @@ function AppContent() {
           <Route path="/settings" element={<Settings />} />
           <Route path="/strategies" element={<Strategies />} />
           <Route path="/strategy/:id" element={<StrategyDetail />} />
+          <Route path="/portfolio" element={<Portfolio />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Layout>
