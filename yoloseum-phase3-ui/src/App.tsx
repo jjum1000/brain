@@ -8,31 +8,17 @@ import {
   LogOut,
   Menu,
   X,
-  TrendingUp,
-  DollarSign,
   Activity,
-  Clock,
-  CheckCircle,
-  XCircle,
-  ArrowUpRight,
-  ArrowDownRight,
+  TrendingUp,
   Zap,
   Target,
   Shield,
   Loader2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
 import { AuthProvider } from '@/context/AuthContext';
@@ -40,28 +26,10 @@ import { useAuth } from '@/hooks/useAuth';
 import { LoginDialog } from '@/components/auth/LoginDialog';
 import { SignupDialog } from '@/components/auth/SignupDialog';
 import { ForgotPasswordDialog } from '@/components/auth/ForgotPasswordDialog';
+import { Dashboard } from '@/components/pages/Dashboard';
+import { Leaderboard } from '@/components/pages/Leaderboard';
 
 type PageType = 'home' | 'dashboard' | 'leaderboard' | 'traders' | 'profile';
-
-interface Transaction {
-  id: string;
-  token: string;
-  type: 'buy' | 'sell';
-  amount: string;
-  price: string;
-  timestamp: string;
-  status: 'completed' | 'pending' | 'failed';
-}
-
-interface Trader {
-  id: string;
-  name: string;
-  avatar: string;
-  winRate: number;
-  totalTrades: number;
-  profit: string;
-  rank: number;
-}
 
 function AppContent() {
   const [currentPage, setCurrentPage] = useState<PageType>('home');
@@ -70,93 +38,6 @@ function AppContent() {
   const [signupDialogOpen, setSignupDialogOpen] = useState(false);
   const [forgotPasswordDialogOpen, setForgotPasswordDialogOpen] = useState(false);
   const { user, loading, signOut } = useAuth();
-
-  const mockTransactions: Transaction[] = [
-    {
-      id: '1',
-      token: 'BONK',
-      type: 'buy',
-      amount: '10,000',
-      price: '0.00001234',
-      timestamp: '2 min ago',
-      status: 'completed',
-    },
-    {
-      id: '2',
-      token: 'WIF',
-      type: 'sell',
-      amount: '5,000',
-      price: '0.00045678',
-      timestamp: '5 min ago',
-      status: 'completed',
-    },
-    {
-      id: '3',
-      token: 'PEPE',
-      type: 'buy',
-      amount: '25,000',
-      price: '0.00000891',
-      timestamp: '12 min ago',
-      status: 'pending',
-    },
-    {
-      id: '4',
-      token: 'DOGE',
-      type: 'sell',
-      amount: '1,500',
-      price: '0.08234567',
-      timestamp: '18 min ago',
-      status: 'completed',
-    },
-  ];
-
-  const mockTraders: Trader[] = [
-    {
-      id: '1',
-      name: 'CryptoWhale',
-      avatar: '',
-      winRate: 87.5,
-      totalTrades: 245,
-      profit: '+$127,345',
-      rank: 1,
-    },
-    {
-      id: '2',
-      name: 'MoonShot',
-      avatar: '',
-      winRate: 82.3,
-      totalTrades: 189,
-      profit: '+$98,234',
-      rank: 2,
-    },
-    {
-      id: '3',
-      name: 'DiamondHands',
-      avatar: '',
-      winRate: 79.8,
-      totalTrades: 312,
-      profit: '+$85,678',
-      rank: 3,
-    },
-    {
-      id: '4',
-      name: 'YoloKing',
-      avatar: '',
-      winRate: 76.2,
-      totalTrades: 156,
-      profit: '+$72,145',
-      rank: 4,
-    },
-    {
-      id: '5',
-      name: 'TokenMaster',
-      avatar: '',
-      winRate: 74.5,
-      totalTrades: 203,
-      profit: '+$65,891',
-      rank: 5,
-    },
-  ];
 
   const navigation = [
     { name: 'Home', page: 'home' as PageType, icon: Home },
@@ -371,196 +252,9 @@ function AppContent() {
     </div>
   );
 
-  const renderDashboard = () => (
-    <div className="min-h-screen bg-slate-900">
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Dashboard</h1>
-          <p className="text-slate-400">Track your trading performance and recent activity</p>
-        </div>
+  const renderDashboard = () => <Dashboard />;
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card className="bg-slate-800/50 border-slate-700">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-slate-300">Total Profit</CardTitle>
-              <DollarSign className="h-4 w-4 text-green-500" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-white">$45,231</div>
-              <div className="flex items-center gap-1 text-xs text-green-500 mt-1">
-                <ArrowUpRight className="h-3 w-3" />
-                <span>+20.1% from last month</span>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-slate-800/50 border-slate-700">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-slate-300">Win Rate</CardTitle>
-              <TrendingUp className="h-4 w-4 text-amber-500" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-white">78.5%</div>
-              <Progress value={78.5} className="mt-2 h-2" />
-            </CardContent>
-          </Card>
-
-          <Card className="bg-slate-800/50 border-slate-700">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-slate-300">Total Trades</CardTitle>
-              <Activity className="h-4 w-4 text-blue-500" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-white">156</div>
-              <div className="flex items-center gap-1 text-xs text-slate-400 mt-1">
-                <span>32 this week</span>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-slate-800/50 border-slate-700">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-slate-300">Rank</CardTitle>
-              <Trophy className="h-4 w-4 text-amber-500" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-white">#12</div>
-              <div className="flex items-center gap-1 text-xs text-green-500 mt-1">
-                <ArrowUpRight className="h-3 w-3" />
-                <span>Up 3 positions</span>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        <Card className="bg-slate-800/50 border-slate-700">
-          <CardHeader>
-            <CardTitle className="text-white">Recent Transactions</CardTitle>
-            <CardDescription className="text-slate-400">
-              Your latest trading activity
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow className="border-slate-700">
-                  <TableHead className="text-slate-300">Token</TableHead>
-                  <TableHead className="text-slate-300">Type</TableHead>
-                  <TableHead className="text-slate-300">Amount</TableHead>
-                  <TableHead className="text-slate-300">Price</TableHead>
-                  <TableHead className="text-slate-300">Time</TableHead>
-                  <TableHead className="text-slate-300">Status</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {mockTransactions.map((tx) => (
-                  <TableRow key={tx.id} className="border-slate-700">
-                    <TableCell className="font-medium text-white">{tx.token}</TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={tx.type === 'buy' ? 'default' : 'secondary'}
-                        className={
-                          tx.type === 'buy'
-                            ? 'bg-green-600 hover:bg-green-700'
-                            : 'bg-red-600 hover:bg-red-700'
-                        }
-                      >
-                        {tx.type === 'buy' ? (
-                          <ArrowUpRight className="h-3 w-3 mr-1" />
-                        ) : (
-                          <ArrowDownRight className="h-3 w-3 mr-1" />
-                        )}
-                        {tx.type.toUpperCase()}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-slate-300">{tx.amount}</TableCell>
-                    <TableCell className="text-slate-300">{tx.price}</TableCell>
-                    <TableCell className="text-slate-400 flex items-center gap-1">
-                      <Clock className="h-3 w-3" />
-                      {tx.timestamp}
-                    </TableCell>
-                    <TableCell>
-                      {tx.status === 'completed' && (
-                        <CheckCircle className="h-4 w-4 text-green-500" />
-                      )}
-                      {tx.status === 'pending' && (
-                        <Clock className="h-4 w-4 text-amber-500" />
-                      )}
-                      {tx.status === 'failed' && (
-                        <XCircle className="h-4 w-4 text-red-500" />
-                      )}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
-  );
-
-  const renderLeaderboard = () => (
-    <div className="min-h-screen bg-slate-900">
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Leaderboard</h1>
-          <p className="text-slate-400">Top traders in the YOLOSEUM community</p>
-        </div>
-
-        <Card className="bg-slate-800/50 border-slate-700">
-          <CardContent className="p-0">
-            <Table>
-              <TableHeader>
-                <TableRow className="border-slate-700">
-                  <TableHead className="text-slate-300">Rank</TableHead>
-                  <TableHead className="text-slate-300">Trader</TableHead>
-                  <TableHead className="text-slate-300">Win Rate</TableHead>
-                  <TableHead className="text-slate-300">Total Trades</TableHead>
-                  <TableHead className="text-slate-300">Profit</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {mockTraders.map((trader) => (
-                  <TableRow key={trader.id} className="border-slate-700">
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        {trader.rank === 1 && <Trophy className="h-5 w-5 text-amber-500" />}
-                        {trader.rank === 2 && <Trophy className="h-5 w-5 text-slate-400" />}
-                        {trader.rank === 3 && <Trophy className="h-5 w-5 text-orange-600" />}
-                        <span className="font-bold text-white">#{trader.rank}</span>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-3">
-                        <Avatar>
-                          <AvatarImage src={trader.avatar} />
-                          <AvatarFallback className="bg-amber-600 text-white">
-                            {trader.name.slice(0, 2).toUpperCase()}
-                          </AvatarFallback>
-                        </Avatar>
-                        <span className="font-medium text-white">{trader.name}</span>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Progress value={trader.winRate} className="w-20 h-2" />
-                        <span className="text-slate-300 text-sm">{trader.winRate}%</span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-slate-300">{trader.totalTrades}</TableCell>
-                    <TableCell className="font-semibold text-green-500">
-                      {trader.profit}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
-  );
+  const renderLeaderboard = () => <Leaderboard />;
 
   const renderTraders = () => (
     <div className="min-h-screen bg-slate-900">
@@ -570,8 +264,15 @@ function AppContent() {
           <p className="text-slate-400">Follow and learn from the best traders</p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {mockTraders.map((trader) => (
+        <Card className="bg-slate-800/50 border-slate-700 p-8">
+          <div className="text-center">
+            <p className="text-slate-300 mb-4">Traders page coming soon...</p>
+            <p className="text-slate-400 text-sm">Real trader data will be loaded from Firestore</p>
+          </div>
+        </Card>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 hidden">
+          {[].map((trader: any) => (
             <Card key={trader.id} className="bg-slate-800/50 border-slate-700">
               <CardHeader>
                 <div className="flex items-center gap-4">
