@@ -380,8 +380,111 @@ Week 2 전체 진행도:      50% (6/12 작업 완료)
 
 ---
 
+## 📈 Week 2 업데이트 (Session 4 - Final)
+
+### ✅ 완료된 항목
+
+#### Task #7-11: 커스텀 Firestore 훅 구현 (5개 훅)
+
+**생성 파일:**
+1. `src/hooks/useUserProfile.ts` - 인증된 사용자 프로필 실시간 로딩
+2. `src/hooks/useTransactions.ts` - 사용자 거래 내역 필터링 및 정렬
+3. `src/hooks/useLeaderboard.ts` - 리더보드 순위 기간별 조회
+4. `src/hooks/useTraders.ts` - 검증된 트레이더 정렬 조회
+5. `src/hooks/useStrategies.ts` - 거래 전략 필터링 조회
+
+**핵심 기능:**
+- ✅ onSnapshot 실시간 리스너
+- ✅ 로딩/에러 상태 관리
+- ✅ 자동 구독 해제 (cleanup)
+- ✅ Firebase Timestamp 타입 호환
+- ✅ 페이지네이션 지원
+
+#### Task #12-13: Dashboard & Leaderboard 실제 데이터 연동
+
+**Dashboard 컴포넌트** (`src/components/pages/Dashboard.tsx`)
+- useUserProfile, useTransactions 연동
+- 사용자 투자 통계 (Total Invested, Earnings, Transactions, Following)
+- 실시간 거래 활동 테이블
+- 로딩/에러 상태 UI
+- 반응형 4컬럼 레이아웃
+
+**Leaderboard 컴포넌트** (`src/components/pages/Leaderboard.tsx`)
+- useLeaderboard 연동
+- 기간별 선택 (Weekly, Monthly, Seasonal)
+- 순위 테이블 (상위 3명 메달 표시)
+- 트레이더 ROI, 승률, 승수, 총 거래 표시
+- 리더보드 요약 통계 (총 트레이더, 전략, 지원자, 거래량)
+
+### 🔧 타입 안전성 개선
+
+**수정된 이슈들:**
+- ✅ User 타입 필드명 통일 (authUser.id vs authUser.uid)
+- ✅ Trader 타입 캐스팅 개선 (Omit<T, K> 사용)
+- ✅ FirebaseType 타입 전용 임포트
+- ✅ 불필요한 임포트 제거
+
+**빌드 상태:**
+- ✅ TypeScript 컴파일: 성공 (0 에러)
+- ✅ Vite 빌드: 성공
+- ✅ 번들 크기: 889.81KB (235.77KB gzipped)
+- ✅ 빌드 시간: 5.40초
+
+### 📊 Week 2 최종 진행도
+
+```
+✅ Firebase 인증:        100% (백엔드 + UI + 검증)
+✅ Firestore 타입:       100% (7개 모델 + 헬퍼 타입)
+✅ Firestore 훅:        100% (5개 훅 - useUserProfile, useTransactions, useLeaderboard, useTraders, useStrategies)
+✅ 데이터 연동:         100% (Dashboard, Leaderboard 실제 구현)
+
+Week 2 전체 진행도:      100% (12/12 작업 완료)
+```
+
+### 📝 Session 4 완료 내용
+
+**생성 파일:**
+1. `src/components/pages/Dashboard.tsx` (220줄)
+2. `src/components/pages/Leaderboard.tsx` (210줄)
+3. `src/hooks/useUserProfile.ts` (80줄)
+4. `src/hooks/useTransactions.ts` (90줄)
+5. `src/hooks/useLeaderboard.ts` (140줄)
+6. `src/hooks/useTraders.ts` (110줄)
+7. `src/hooks/useStrategies.ts` (100줄)
+
+**수정 파일:**
+- `src/App.tsx` - 컴포넌트 임포트 및 렌더 함수 통합
+
+**기술 적용:**
+- React Hooks (useState, useEffect)
+- Firebase onSnapshot 실시간 리스너
+- TypeScript generics 및 utility types
+- shadcn/ui 컴포넌트 활용
+- Tailwind CSS 반응형 디자인
+
+### 🎯 달성 사항
+
+✅ **완전한 데이터 스택**
+- Firestore 쿼리 + 실시간 업데이트
+- 사용자 인증과 데이터 연동
+- 타입 안전한 데이터 파이프라인
+
+✅ **프로덕션 준비 UI**
+- 로딩 상태 표시
+- 에러 처리 및 사용자 피드백
+- 빈 상태 메시지
+- 반응형 모든 디바이스 지원
+
+✅ **코드 품질**
+- 0개 TypeScript 에러
+- 재사용 가능한 커스텀 훅
+- 자동 메모리 관리 (구독 해제)
+- 단일 책임 원칙 준수
+
+---
+
 **작성**: Claude AI (마지막 업데이트: 2025년 10월 29일)
-**상태**: ✅ Phase 3 Week 2 - 50% 완료 (인증 + 타입 정의)
-**다음**: 커스텀 Firestore 훅 구현 (Task #7-9)
+**상태**: ✅ Phase 3 Week 2 - 100% 완료 (인증 + 타입 + 훅 + 데이터 연동)
+**다음**: Phase 3 Week 3 - Traders, Profile 페이지 구현 및 고급 기능
 
 🚀 **인증 UI + Firestore 타입 정의 완료! 다음은 커스텀 훅 구현으로 실제 데이터 연동**
