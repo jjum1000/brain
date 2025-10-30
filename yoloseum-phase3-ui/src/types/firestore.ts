@@ -151,6 +151,9 @@ export interface Strategy {
   description: string;
   category: "momentum" | "contrarian" | "scalping" | "grid" | "hedging";
   risk: "low" | "medium" | "high";
+  youtubeUrl?: string;
+  youtubeTitle?: string;
+  youtubeDescription?: string;
   createdAt: Timestamp;
   updatedAt: Timestamp;
   execution: StrategyExecution;

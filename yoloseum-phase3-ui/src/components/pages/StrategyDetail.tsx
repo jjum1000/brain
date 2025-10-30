@@ -17,6 +17,7 @@ import {
 import { db } from '@/lib/firebase';
 import { FirebaseTimestamp } from '@/types/firestore';
 import { DepositSection } from '@/components/deposit/DepositSection';
+import { YouTubePlayer } from '@/components/common/YouTubePlayer';
 import type { Strategy } from '@/types/firestore';
 
 /**
@@ -180,6 +181,24 @@ export function StrategyDetail() {
             )}
           </CardHeader>
         </Card>
+
+        {/* YouTube Video Section */}
+        {strategy.youtubeUrl && (
+          <div className="mb-8">
+            <YouTubePlayer
+              videoUrl={strategy.youtubeUrl}
+              title={strategy.youtubeTitle || `${strategy.name} - Tutorial`}
+            />
+            {/* YouTube Description */}
+            {strategy.youtubeDescription && (
+              <Card className="mt-4 bg-slate-800/50 border-slate-700">
+                <CardContent className="pt-6">
+                  <p className="text-slate-300">{strategy.youtubeDescription}</p>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        )}
 
         {/* Performance Metrics Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
