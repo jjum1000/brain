@@ -2,6 +2,80 @@ import { FirebaseError } from 'firebase/app';
 import { toast } from '@/hooks/use-toast';
 
 /**
+ * Jupiter DEX 에러 메시지 매핑
+ */
+export const jupiterErrorMessages: Record<string, string> = {
+  // Swap errors
+  'Slippage tolerance exceeded': '슬리피지 허용치를 초과했습니다. 슬리피지를 높여주세요',
+  'Insufficient SOL': 'SOL 잔액이 부족합니다',
+  'Insufficient balance': '토큰 잔액이 부족합니다',
+  'No routes found': '이 토큰 쌍에 대한 스왑 경로를 찾을 수 없습니다',
+  'Route not found': '이 토큰 쌍에 대한 스왑 경로를 찾을 수 없습니다',
+  'Invalid token pair': '지원하지 않는 토큰 조합입니다',
+  'Token not supported': '지원하지 않는 토큰입니다',
+
+  // Rate limiting
+  'Rate limit exceeded': '요청이 너무 많습니다. 잠시 후 다시 시도해주세요',
+  '429': '요청이 너무 많습니다. 잠시 후 다시 시도해주세요',
+
+  // API errors
+  'API error': 'Jupiter API에 오류가 발생했습니다',
+  'Service unavailable': 'Jupiter 서비스를 일시적으로 이용할 수 없습니다. 나중에 다시 시도해주세요',
+  '503': 'Jupiter 서비스를 일시적으로 이용할 수 없습니다. 나중에 다시 시도해주세요',
+  'Bad gateway': 'Jupiter에 연결할 수 없습니다. 나중에 다시 시도해주세요',
+  '502': 'Jupiter에 연결할 수 없습니다. 나중에 다시 시도해주세요',
+  'Internal server error': 'Jupiter 서버 오류가 발생했습니다. 나중에 다시 시도해주세요',
+  '500': 'Jupiter 서버 오류가 발생했습니다. 나중에 다시 시도해주세요',
+
+  // Network errors
+  'Network error': '네트워크 연결을 확인해주세요',
+  'Timeout': '요청 시간이 초과되었습니다. 다시 시도해주세요',
+  'Failed to fetch': '데이터를 가져올 수 없습니다. 네트워크 연결을 확인해주세요',
+
+  // Transaction errors
+  'Transaction failed': '트랜잭션이 실패했습니다. 다시 시도해주세요',
+  'Transaction rejected': '트랜잭션이 거부되었습니다',
+  'Wallet not connected': '지갑이 연결되어 있지 않습니다. 지갑을 연결해주세요',
+  'Transaction signing failed': '트랜잭션 서명에 실패했습니다',
+};
+
+/**
+ * Jupiter 에러인지 확인
+ */
+export function isJupiterError(error: any): boolean {
+  if (!error) return false;
+  const message = error.message || error.toString();
+  return Object.keys(jupiterErrorMessages).some(key =>
+    message.toLowerCase().includes(key.toLowerCase())
+  );
+}
+
+/**
+ * Jupiter 에러 메시지 가져오기
+ */
+export function getJupiterErrorMessage(error: any): string {
+  if (!error) return '알 수 없는 오류가 발생했습니다';
+
+  const message = error.message || error.toString();
+
+  // 정확한 매칭
+  for (const [code, msg] of Object.entries(jupiterErrorMessages)) {
+    if (message.includes(code)) {
+      return msg;
+    }
+  }
+
+  // 부분 매칭
+  for (const [code, msg] of Object.entries(jupiterErrorMessages)) {
+    if (message.toLowerCase().includes(code.toLowerCase())) {
+      return msg;
+    }
+  }
+
+  return message || '스왑 작업 중 오류가 발생했습니다';
+}
+
+/**
  * Firebase/Firestore 에러 코드를 사용자 친화적 메시지로 매핑
  */
 export const firebaseErrorMessages: Record<string, string> = {

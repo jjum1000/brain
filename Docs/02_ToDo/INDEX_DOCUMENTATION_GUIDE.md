@@ -13,11 +13,12 @@
 - Version management confusion
 - Unclear which document to read
 
-### Current Situation (After 2025-10-30)
-- 12 documents clearly categorized
+### Current Situation (After 2025-10-31)
+- 19 documents clearly categorized
 - Document purpose clearly marked with prefixes
 - Version management simplified
 - Overall situation understandable at a glance
+- Development documents integrated into 02_ToDo folder
 
 ---
 
@@ -40,7 +41,7 @@ Use only as reference. Modification not recommended.
 
 ---
 
-### ✅ Done Documents (5 files) - Completed Plans & Progress
+### ✅ Done Documents (8 files) - Completed Plans & Progress
 Reference use. Modification possible but content is historical, not current.
 
 | Filename | Purpose | Created | Key Content |
@@ -50,6 +51,9 @@ Reference use. Modification possible but content is historical, not current.
 | **done_PHASE3_QUICK_START.md** | Phase 3 quick start guide | 2025-10-28 | Day-by-day schedule, sample code, setup |
 | **done_PHASE3_KICKOFF.md** | Phase 3 official start | 2025-10-29 | Status, tech stack, next steps |
 | **done_README_PHASE3_START.md** | Phase 3 start guide | 2025-10-28 | Document navigation, goals, FAQ |
+| **done_TASK_IMPLEMENTATIONS_DAY1-2.md** | Day 1-2 implementation guide (Tasks 1-3) | 2025-10-30 | usePortfolio hook, Portfolio page, Profile page - COMPLETED |
+| **done_TASK_IMPLEMENTATIONS_DAY3.md** | Day 3 implementation guide (Tasks 4-6) | 2025-10-30 | Toast system, Skeleton UI, Error handling - COMPLETED |
+| **done_DAY4_COMPLETION_SUMMARY.md** | Day 4 performance optimization summary | 2025-10-31 | Bundle optimization, Image optimization, Query optimization - COMPLETED |
 
 **When to Review?**
 - When understanding entire Phase 3 plan
@@ -58,13 +62,15 @@ Reference use. Modification possible but content is historical, not current.
 
 ---
 
-### 🟢 Todo Documents (2 files) - Currently in Use (Editable)
+### 🟢 Todo Documents (4 files) - Currently in Use (Editable)
 Current ongoing work. Updated periodically.
 
 | Filename | Purpose | Created | Key Content |
 |----------|---------|---------|-------------|
 | **todo_WORKPLANNER_ORGANIZED_2025-10-30.md** | Current overall project status | 2025-10-30 | Phase 1-4 status, completed items, remaining work, documentation organization summary |
-| **todo_PHASE3_WEEK4_ACTION_PLAN.md** | Week 4 detailed action plan | 2025-10-30 | Day 1-6 action plans, checklists, Phase 4-5 planned items |
+| **done_PHASE3_WEEK4_ACTION_PLAN.md** | Week 4 detailed action plan (Completed) | 2025-10-30 | Day 1-6 action plans, checklists, Phase 4-5 planned items |
+| **todo_PHASE3_WEEK4_DETAILED_INSTRUCTION.md** | Week 4 detailed instruction guide | 2025-10-30 | Project structure, Task 1-15 overview, dependencies, implementation details |
+| **todo_TASK_IMPLEMENTATIONS_DAY4_5_6.md** | Day 4-6 implementation guide (Tasks 7-15, In Progress) | 2025-10-30 | Bundle optimization, mobile testing, deployment preparation |
 
 **When to Review?**
 - When figuring out what to do now (todo_WORKPLANNER_ORGANIZED)
@@ -191,10 +197,12 @@ todo_PHASE3_WEEK4_ACTION_PLAN (Week 4 in progress)
 
 ## 💾 File Name Organization Record
 
-### 2025-10-30 Organization Work History
+### 2025-10-31 Complete Organization (After Development Docs Moved)
 
 ```
-Before                                  After
+✅ COMPLETED ORGANIZATION:
+
+English Prefix Conversion (2025-10-30):
 ─────────────────────────────────────────────────────────
 아카이빙_FIREBASE_FOUNDATION_PLAN.md
 → archived_FIREBASE_FOUNDATION_PLAN.md
@@ -224,10 +232,36 @@ Before                                  After
 → archived_WORKPLANNER_STATUS_2025-10-28.md
 
 (NEW) → todo_WORKPLANNER_ORGANIZED_2025-10-30.md
-
 (NEW) → todo_PHASE3_WEEK4_ACTION_PLAN.md
-
 (NEW) → INDEX_DOCUMENTATION_GUIDE.md (This file)
+
+Development Documents Moved (2025-10-31):
+─────────────────────────────────────────────────────────
+03_Development/TASK_IMPLEMENTATIONS_DAY1-2.md
+→ 02_ToDo/done_TASK_IMPLEMENTATIONS_DAY1-2.md
+
+03_Development/TASK_IMPLEMENTATIONS_DAY3.md
+→ 02_ToDo/done_TASK_IMPLEMENTATIONS_DAY3.md
+
+03_Development/DAY4_COMPLETION_SUMMARY.md
+→ 02_ToDo/done_DAY4_COMPLETION_SUMMARY.md
+
+03_Development/PHASE3_WEEK4_DETAILED_INSTRUCTION.md
+→ 02_ToDo/todo_PHASE3_WEEK4_DETAILED_INSTRUCTION.md
+
+03_Development/TASK_IMPLEMENTATIONS_DAY4_5_6.md
+→ 02_ToDo/todo_TASK_IMPLEMENTATIONS_DAY4_5_6.md
+
+03_Development/README.md
+→ 02_ToDo/INDEX_PHASE3_WEEK4_DEVELOPMENT_GUIDE.md
+
+Status Renames (2025-10-31):
+─────────────────────────────────────────────────────────
+02_ToDo/todo_WORKPLANNER_ORGANIZED_2025-10-30.md
+→ 02_ToDo/done_WORKPLANNER_ORGANIZED_2025-10-30.md (completed)
+
+02_ToDo/todo_PHASE3_WEEK4_ACTION_PLAN.md
+→ 02_ToDo/done_PHASE3_WEEK4_ACTION_PLAN.md (completed)
 ```
 
 ---
@@ -326,8 +360,14 @@ Tasks:
 
 ---
 
-**Organization Completed**: 2025-10-30
+**Last Update**: 2025-10-31
 **Organizer**: Claude AI
-**Status**: ✅ Organization Complete and Verified
+**Status**: ✅ Complete Organization with Development Docs Integrated
 
-🎉 **Documentation is now clean and systematic!**
+📊 **Current Statistics**:
+- Total Documents: 19
+- Archived: 4 | Done: 8 | Todo: 4 | Index: 2 | Summary: 1
+- All development documents organized with proper status prefixes
+- 03_Development folder now empty and ready for new work
+
+🎉 **Documentation is now completely organized and systematic!**

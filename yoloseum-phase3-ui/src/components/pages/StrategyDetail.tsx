@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/table';
 import { db } from '@/lib/firebase';
 import { FirebaseTimestamp } from '@/types/firestore';
+import { DepositSection } from '@/components/deposit/DepositSection';
 import type { Strategy } from '@/types/firestore';
 
 /**
@@ -287,6 +288,11 @@ export function StrategyDetail() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Deposit Section */}
+        {strategy.execution?.smartContractAddress && (
+          <DepositSection vaultAddress={strategy.execution.smartContractAddress} />
+        )}
 
         {/* Smart Contract */}
         {strategy.execution?.smartContractAddress && (
