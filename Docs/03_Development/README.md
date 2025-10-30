@@ -461,8 +461,9 @@ npx lighthouse http://localhost:5173/dashboard --view
 |------|------|------|------|------|
 | [PHASE3_WEEK4_DETAILED_INSTRUCTION.md](PHASE3_WEEK4_DETAILED_INSTRUCTION.md) | 전체 | 개요 | 참고용 | 📖 참고 |
 | [TASK_IMPLEMENTATIONS_DAY1-2.md](TASK_IMPLEMENTATIONS_DAY1-2.md) | Day 1-2 | 1-3 | 8-10h | ✅ **DONE** |
-| [TASK_IMPLEMENTATIONS_DAY3.md](TASK_IMPLEMENTATIONS_DAY3.md) | Day 3 | 4-6 | 8-10h | 📋 예정 |
-| [TASK_IMPLEMENTATIONS_DAY4_5_6.md](TASK_IMPLEMENTATIONS_DAY4_5_6.md) | Day 4-6 | 7-15 | 12-15h | 📋 예정 |
+| [TASK_IMPLEMENTATIONS_DAY3.md](TASK_IMPLEMENTATIONS_DAY3.md) | Day 3 | 4-6 | 8-10h | ✅ **DONE** |
+| [DAY4_COMPLETION_SUMMARY.md](DAY4_COMPLETION_SUMMARY.md) | Day 4 | 7-9 | 4h | ✅ **DONE** |
+| [TASK_IMPLEMENTATIONS_DAY4_5_6.md](TASK_IMPLEMENTATIONS_DAY4_5_6.md) | Day 5-6 | 10-15 | 14h | ⏳ 진행중 |
 
 ---
 
