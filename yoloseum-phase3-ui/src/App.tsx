@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import { AuthProvider } from '@/context/AuthContext';
+import { Toaster } from '@/components/ui/toaster';
 import { Layout } from '@/components/Layout';
 import { Dashboard } from '@/components/pages/Dashboard';
 import { Leaderboard } from '@/components/pages/Leaderboard';
@@ -157,6 +158,7 @@ export default function App() {
   return (
     <AuthProvider>
       <AppContent />
+      <Toaster />
     </AuthProvider>
   );
 }

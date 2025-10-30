@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useState, useMemo } from 'react';
-import { Search, Star, Users, TrendingUp, Loader2, AlertCircle } from 'lucide-react';
+import { Search, Star, Users, TrendingUp, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useTraders } from '@/hooks/useTraders';
+import { TraderGridSkeleton } from '@/components/common/Skeletons';
 
 /**
  * Traders List Page Component
@@ -141,12 +142,7 @@ export function Traders() {
 
         {/* Traders Grid */}
         {loading ? (
-          <div className="flex items-center justify-center h-96">
-            <div className="flex flex-col items-center gap-4">
-              <Loader2 className="h-8 w-8 animate-spin text-amber-500" />
-              <p className="text-slate-300">Loading traders...</p>
-            </div>
-          </div>
+          <TraderGridSkeleton count={6} />
         ) : filteredTraders.length === 0 ? (
           <Card className="bg-slate-800/50 border-slate-700">
             <CardContent className="py-12 text-center">

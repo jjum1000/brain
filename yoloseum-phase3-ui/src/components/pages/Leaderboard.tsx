@@ -1,4 +1,4 @@
-import { Trophy, Loader2, TrendingUp } from 'lucide-react';
+import { Trophy, TrendingUp } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Table,
@@ -13,6 +13,7 @@ import { Progress } from '@/components/ui/progress';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useLeaderboard } from '@/hooks/useLeaderboard';
+import { TableSkeleton } from '@/components/common/Skeletons';
 
 type LeaderboardPeriod = 'weekly' | 'monthly' | 'seasonal';
 
@@ -79,12 +80,7 @@ export function Leaderboard() {
         )}
 
         {loading ? (
-          <div className="flex items-center justify-center h-96">
-            <div className="flex flex-col items-center gap-4">
-              <Loader2 className="h-8 w-8 animate-spin text-amber-500" />
-              <p className="text-slate-300">Loading leaderboard...</p>
-            </div>
-          </div>
+          <TableSkeleton rowCount={10} />
         ) : rankings.length === 0 ? (
           <Card className="bg-slate-800/50 border-slate-700">
             <CardContent className="py-12">

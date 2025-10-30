@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ArrowLeft, Edit2, Save, X, Loader2, Copy, Check } from 'lucide-react';
+import { ArrowLeft, Edit2, Save, X, Copy, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -23,6 +23,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import { profileFormSchema, type ProfileFormValues } from '@/lib/validations/profile';
 import { FirebaseTimestamp } from '@/types/firestore';
+import { ProfileSkeleton } from '@/components/common/Skeletons';
 
 /**
  * Profile Page Component
@@ -108,10 +109,13 @@ export function Profile() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <Loader2 className="h-8 w-8 animate-spin text-amber-500" />
-          <p className="text-slate-300">Loading profile...</p>
+      <div className="min-h-screen bg-slate-900">
+        <div className="container mx-auto px-4 py-8">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-white mb-2">Profile</h1>
+            <p className="text-slate-400">Manage your profile information</p>
+          </div>
+          <ProfileSkeleton />
         </div>
       </div>
     );

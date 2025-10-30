@@ -8,7 +8,6 @@ import {
   Clock,
   CheckCircle,
   XCircle,
-  Loader2,
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -24,6 +23,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import { useTransactions } from '@/hooks/useTransactions';
 import { useAuth } from '@/hooks/useAuth';
+import { CardGridSkeleton, TableSkeleton } from '@/components/common/Skeletons';
 
 export function Dashboard() {
   const { user: authUser } = useAuth();
@@ -87,12 +87,10 @@ export function Dashboard() {
         )}
 
         {isLoading ? (
-          <div className="flex items-center justify-center h-96">
-            <div className="flex flex-col items-center gap-4">
-              <Loader2 className="h-8 w-8 animate-spin text-amber-500" />
-              <p className="text-slate-300">Loading your dashboard...</p>
-            </div>
-          </div>
+          <>
+            <CardGridSkeleton count={4} />
+            <TableSkeleton rowCount={5} />
+          </>
         ) : (
           <>
             {/* Stats Cards */}

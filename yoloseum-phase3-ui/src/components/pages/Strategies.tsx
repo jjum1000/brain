@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Search, Loader2, TrendingUp, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Search, TrendingUp, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/select';
 import { useStrategies } from '@/hooks/useStrategies';
 import type { Strategy } from '@/types/firestore';
+import { TraderGridSkeleton } from '@/components/common/Skeletons';
 
 /**
  * Strategies List Page Component
@@ -69,10 +70,13 @@ export function Strategies() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <Loader2 className="h-8 w-8 animate-spin text-amber-500" />
-          <p className="text-slate-300">Loading strategies...</p>
+      <div className="min-h-screen bg-slate-900">
+        <div className="container mx-auto px-4 py-8">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-white mb-2">Strategies</h1>
+            <p className="text-slate-400">Discover and follow profitable trading strategies</p>
+          </div>
+          <TraderGridSkeleton count={8} />
         </div>
       </div>
     );

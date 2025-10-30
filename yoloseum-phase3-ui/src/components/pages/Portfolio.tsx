@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useState, useMemo } from 'react';
-import { ArrowLeft, Loader2, AlertCircle, TrendingUp, DollarSign, Percent, Activity } from 'lucide-react';
+import { ArrowLeft, AlertCircle, TrendingUp, DollarSign, Percent, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -25,6 +25,7 @@ import { useTransactions } from '@/hooks/useTransactions';
 import { usePortfolio } from '@/hooks/usePortfolio';
 import { FirebaseTimestamp } from '@/types/firestore';
 import type { Transaction } from '@/types/firestore';
+import { CardGridSkeleton, TableSkeleton } from '@/components/common/Skeletons';
 
 /**
  * Portfolio Page Component
@@ -124,10 +125,14 @@ export function Portfolio() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <Loader2 className="h-8 w-8 animate-spin text-amber-500" />
-          <p className="text-slate-300">Loading portfolio...</p>
+      <div className="min-h-screen bg-slate-900">
+        <div className="container mx-auto px-4 py-8">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-white mb-2">Portfolio</h1>
+            <p className="text-slate-400">Track your investments and portfolio performance</p>
+          </div>
+          <CardGridSkeleton count={4} />
+          <TableSkeleton rowCount={5} />
         </div>
       </div>
     );
