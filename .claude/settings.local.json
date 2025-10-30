@@ -12,7 +12,8 @@
       "Bash(npm run build:*)",
       "Bash(git add:*)",
       "Bash(cat:*)",
-      "Bash(__NEW_LINE__ grep -n \"{/\\* Smart Contract \\*/}\" \"/tmp/strategy_detail_new.txt\")"
+      "Bash(__NEW_LINE__ grep -n \"{/\\* Smart Contract \\*/}\" \"/tmp/strategy_detail_new.txt\")",
+      "Bash(npm view:*)"
     ],
     "deny": [],
     "ask": []

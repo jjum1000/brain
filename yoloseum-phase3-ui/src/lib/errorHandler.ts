@@ -2,6 +2,91 @@ import { FirebaseError } from 'firebase/app';
 import { toast } from '@/hooks/use-toast';
 
 /**
+ * Solana Vault 스마트 컨트랙트 에러 메시지 매핑
+ */
+export const vaultErrorMessages: Record<string, string> = {
+  // Vault account errors
+  'Vault account not found': 'Vault 계정을 찾을 수 없습니다. 잠시 후 다시 시도해주세요',
+  'Invalid vault address': '잘못된 Vault 주소입니다',
+  'Vault is paused': 'Vault가 일시 중단되었습니다. 나중에 다시 시도해주세요',
+  'Vault authority mismatch': 'Vault 권한이 일치하지 않습니다',
+
+  // User account errors
+  'User token account not found': '토큰 계정이 없습니다. 토큰 계정을 생성해주세요',
+  'Insufficient user balance': '토큰 잔액이 부족합니다',
+  'User shares not found': '해당 Vault에서 보유한 shares가 없습니다',
+
+  // Deposit errors
+  'Deposit amount too small': '최소 입금액보다 적습니다',
+  'Deposit amount too large': '최대 입금액을 초과했습니다',
+  'Deposit failed': '입금 작업에 실패했습니다. 다시 시도해주세요',
+  'Invalid deposit parameters': '잘못된 입금 파라미터입니다',
+
+  // Withdrawal errors
+  'Insufficient shares': '보유한 shares가 부족합니다',
+  'Withdrawal amount too small': '출금 금액이 너무 적습니다',
+  'Withdrawal failed': '출금 작업에 실패했습니다. 다시 시도해주세요',
+  'Withdrawal not allowed': '현재 출금이 불가능합니다',
+
+  // Transaction errors
+  'Custom program error': 'Vault 프로그램 오류가 발생했습니다',
+  'Account already exists': '계정이 이미 존재합니다',
+  'Account does not exist': '계정이 존재하지 않습니다',
+  'Insufficient lamports': 'SOL 잔액이 부족합니다',
+  'Invalid instruction data': '잘못된 명령어입니다',
+  'Invalid account data': '잘못된 계정 데이터입니다',
+  'Account is not writable': '계정에 쓸 수 있는 권한이 없습니다',
+  'Account is not executable': '계정은 실행 가능하지 않습니다',
+  'Program failed to complete': 'Vault 프로그램 실행에 실패했습니다',
+
+  // RPC errors
+  'BlockhashNotFound': 'Blockhash를 찾을 수 없습니다. 다시 시도해주세요',
+  'Transaction too large': '트랜잭션이 너무 큽니다',
+  'Invalid transaction': '잘못된 트랜잭션입니다',
+
+  // Network/timeout errors
+  'Timeout': '요청 시간이 초과되었습니다. 다시 시도해주세요',
+  'Connection error': 'Solana 네트워크에 연결할 수 없습니다. 네트워크 상태를 확인해주세요',
+  'Failed to get account': '계정 정보를 가져올 수 없습니다',
+};
+
+/**
+ * Vault 에러인지 확인
+ */
+export function isVaultError(error: any): boolean {
+  if (!error) return false;
+  const message = error.message || error.toString();
+  return Object.keys(vaultErrorMessages).some(key =>
+    message.toLowerCase().includes(key.toLowerCase())
+  );
+}
+
+/**
+ * Vault 에러 메시지 가져오기
+ */
+export function getVaultErrorMessage(error: any): string {
+  if (!error) return '알 수 없는 오류가 발생했습니다';
+
+  const message = error.message || error.toString();
+
+  // 정확한 매칭
+  for (const [code, msg] of Object.entries(vaultErrorMessages)) {
+    if (message.includes(code)) {
+      return msg;
+    }
+  }
+
+  // 부분 매칭
+  for (const [code, msg] of Object.entries(vaultErrorMessages)) {
+    if (message.toLowerCase().includes(code.toLowerCase())) {
+      return msg;
+    }
+  }
+
+  return message || 'Vault 작업 중 오류가 발생했습니다';
+}
+
+/**
  * Jupiter DEX 에러 메시지 매핑
  */
 export const jupiterErrorMessages: Record<string, string> = {
