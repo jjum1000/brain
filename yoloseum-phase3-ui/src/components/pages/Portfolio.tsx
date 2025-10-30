@@ -22,6 +22,7 @@ import {
 } from '@/components/ui/select';
 import { useAuth } from '@/hooks/useAuth';
 import { useTransactions } from '@/hooks/useTransactions';
+import { usePortfolio } from '@/hooks/usePortfolio';
 import { FirebaseTimestamp } from '@/types/firestore';
 import type { Transaction } from '@/types/firestore';
 
@@ -33,8 +34,13 @@ import type { Transaction } from '@/types/firestore';
 export function Portfolio() {
   const navigate = useNavigate();
   const { user: authUser } = useAuth();
-  const { transactions, loading, error } = useTransactions(100);
+  const { transactions, loading: txLoading, error: txError } = useTransactions(100);
+  const { investments, statistics, loading: portfolioLoading, error: portfolioError } = usePortfolio(100);
   const [filterType, setFilterType] = useState<string>('');
+
+  // Unified loading and error states
+  const loading = portfolioLoading || txLoading;
+  const error = portfolioError || txError;
 
   // Calculate portfolio statistics
   const portfolioStats = useMemo(() => {
@@ -244,6 +250,131 @@ export function Portfolio() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Investment Statistics Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          {/* Active Investments */}
+          <Card className="bg-slate-800/50 border-slate-700">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm text-slate-300 flex items-center gap-2">
+                <Activity className="h-4 w-4" />
+                Active Investments
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-3xl font-bold text-blue-400">
+                {statistics.activeInvestments}
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Total ROI */}
+          <Card className="bg-slate-800/50 border-slate-700">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm text-slate-300 flex items-center gap-2">
+                <TrendingUp className="h-4 w-4" />
+                Portfolio ROI
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className={`text-3xl font-bold ${statistics.totalROI >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                {statistics.totalROI.toFixed(2)}%
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Total Earned */}
+          <Card className="bg-slate-800/50 border-slate-700">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm text-slate-300 flex items-center gap-2">
+                <DollarSign className="h-4 w-4" />
+                Total Earned
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-3xl font-bold text-green-400">
+                ${statistics.totalEarned.toLocaleString('en-US', { maximumFractionDigits: 2 })}
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Total Invested */}
+          <Card className="bg-slate-800/50 border-slate-700">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm text-slate-300 flex items-center gap-2">
+                <DollarSign className="h-4 w-4" />
+                Total Invested
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-3xl font-bold text-amber-400">
+                ${statistics.totalInvested.toLocaleString('en-US', { maximumFractionDigits: 2 })}
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Investment List */}
+        <Card className="bg-slate-800/50 border-slate-700 mb-8">
+          <CardHeader>
+            <div>
+              <CardTitle className="text-white">Investment List</CardTitle>
+              <CardDescription className="text-slate-400">
+                Your active and closed investments
+              </CardDescription>
+            </div>
+          </CardHeader>
+
+          <CardContent className="p-0">
+            {investments.length === 0 ? (
+              <div className="p-8 text-center">
+                <AlertCircle className="h-12 w-12 text-slate-500 mx-auto mb-4 opacity-50" />
+                <p className="text-slate-400">No investments found</p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="border-slate-700">
+                      <TableHead className="text-slate-300">Strategy</TableHead>
+                      <TableHead className="text-slate-300">Investment Amount</TableHead>
+                      <TableHead className="text-slate-300">Current Profit</TableHead>
+                      <TableHead className="text-slate-300">ROI</TableHead>
+                      <TableHead className="text-slate-300">Status</TableHead>
+                      <TableHead className="text-slate-300">Invested Date</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {investments.map((inv) => (
+                      <TableRow key={inv.id} className="border-slate-700 hover:bg-slate-800/30">
+                        <TableCell className="text-white font-semibold">
+                          {inv.strategyId}
+                        </TableCell>
+                        <TableCell className="text-white font-semibold">
+                          ${inv.investmentAmount.toLocaleString('en-US', { maximumFractionDigits: 2 })}
+                        </TableCell>
+                        <TableCell className={inv.returns.earned >= 0 ? 'text-green-400' : 'text-red-400'}>
+                          ${inv.returns.earned.toLocaleString('en-US', { maximumFractionDigits: 2 })}
+                        </TableCell>
+                        <TableCell className={inv.returns.roi >= 0 ? 'text-green-400' : 'text-red-400'}>
+                          {inv.returns.roi.toFixed(2)}%
+                        </TableCell>
+                        <TableCell>
+                          <Badge className={inv.status === 'active' ? 'bg-green-600' : 'bg-slate-700'}>
+                            {inv.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-slate-400">
+                          {FirebaseTimestamp.toLocaleDateString(inv.investedAt)}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
         {/* Transaction History */}
         <Card className="bg-slate-800/50 border-slate-700">

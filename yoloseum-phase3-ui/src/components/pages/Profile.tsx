@@ -203,44 +203,142 @@ export function Profile() {
           </CardHeader>
         </Card>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {/* Total Invested */}
-          <Card className="bg-slate-800/50 border-slate-700">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm text-slate-300">Total Invested</CardTitle>
+        {/* Profile Information & Stats Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+          {/* User Info Card */}
+          <Card className="bg-slate-800/50 border-slate-700 lg:col-span-2">
+            <CardHeader>
+              <CardTitle className="text-white">Profile Information</CardTitle>
             </CardHeader>
-            <CardContent>
-              <p className="text-3xl font-bold text-green-400">
-                ${userProfile.stats?.totalInvested?.toLocaleString('en-US', { maximumFractionDigits: 2 }) || '0'}
-              </p>
+            <CardContent className="space-y-6">
+              {/* Avatar & Name */}
+              <div className="flex items-center gap-4">
+                <Avatar className="h-20 w-20">
+                  <AvatarImage
+                    src={userProfile?.photoURL || undefined}
+                    alt={userProfile?.displayName}
+                  />
+                  <AvatarFallback className="bg-amber-600 text-white">
+                    {userProfile?.displayName?.charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <div>
+                  <p className="text-xl font-bold text-white">
+                    {userProfile?.displayName || 'No name'}
+                  </p>
+                  <p className="text-sm text-slate-400">
+                    {userProfile?.email}
+                  </p>
+                  {userProfile?.verified && (
+                    <Badge className="bg-green-600 mt-2">Verified</Badge>
+                  )}
+                </div>
+              </div>
+
+              {/* Bio */}
+              <div>
+                <p className="text-sm text-slate-400 mb-2">Bio</p>
+                <p className="text-slate-300">
+                  {userProfile?.bio || 'No bio added'}
+                </p>
+              </div>
+
+              {/* Wallet Address */}
+              <div>
+                <p className="text-sm text-slate-400 mb-2">Wallet Address</p>
+                <div className="flex items-center gap-2">
+                  <code className="bg-slate-700 px-3 py-2 rounded text-amber-400 text-sm flex-1 overflow-auto">
+                    {userProfile?.walletAddress
+                      ? `${userProfile.walletAddress.slice(0, 6)}...${userProfile.walletAddress.slice(-4)}`
+                      : 'Not connected'}
+                  </code>
+                  {userProfile?.walletAddress && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        navigator.clipboard.writeText(userProfile.walletAddress || '');
+                        setCopied(true);
+                        setTimeout(() => setCopied(false), 2000);
+                      }}
+                      className="text-slate-400 hover:text-amber-400"
+                    >
+                      {copied ? (
+                        <Check className="h-4 w-4" />
+                      ) : (
+                        <Copy className="h-4 w-4" />
+                      )}
+                    </Button>
+                  )}
+                </div>
+              </div>
             </CardContent>
           </Card>
 
-          {/* Total Earnings */}
+          {/* Stats Card */}
           <Card className="bg-slate-800/50 border-slate-700">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm text-slate-300">Total Earnings</CardTitle>
+            <CardHeader>
+              <CardTitle className="text-white">Account Stats</CardTitle>
             </CardHeader>
-            <CardContent>
-              <p className="text-3xl font-bold text-blue-400">
-                ${userProfile.stats?.totalEarnings?.toLocaleString('en-US', { maximumFractionDigits: 2 }) || '0'}
-              </p>
-            </CardContent>
-          </Card>
-
-          {/* Following Count */}
-          <Card className="bg-slate-800/50 border-slate-700">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm text-slate-300">Following</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-3xl font-bold text-purple-400">
-                {userProfile.stats?.followingCount || 0}
-              </p>
+            <CardContent className="space-y-4">
+              <div>
+                <p className="text-sm text-slate-400">Joined</p>
+                <p className="text-white font-semibold">
+                  {userProfile?.createdAt
+                    ? FirebaseTimestamp.toLocaleDateString(userProfile.createdAt)
+                    : 'Unknown'}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-slate-400">Role</p>
+                <Badge className="bg-blue-600 capitalize">
+                  {userProfile?.role || 'spectator'}
+                </Badge>
+              </div>
+              <div>
+                <p className="text-sm text-slate-400">Following Count</p>
+                <p className="text-white font-semibold">
+                  {userProfile?.stats?.followingCount || 0}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-slate-400">Total Invested</p>
+                <p className="text-white font-semibold">
+                  ${userProfile?.stats?.totalInvested?.toLocaleString('en-US', { maximumFractionDigits: 2 }) || '0'}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-slate-400">Total Earnings</p>
+                <p className="text-green-400 font-semibold">
+                  ${userProfile?.stats?.totalEarnings?.toLocaleString('en-US', { maximumFractionDigits: 2 }) || '0'}
+                </p>
+              </div>
             </CardContent>
           </Card>
         </div>
+
+        {/* Favorite Traders */}
+        {userProfile?.stats?.favoriteTraders && userProfile.stats.favoriteTraders.length > 0 && (
+          <Card className="bg-slate-800/50 border-slate-700 mb-8">
+            <CardHeader>
+              <CardTitle className="text-white">Favorite Traders</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {userProfile.stats.favoriteTraders.map((traderId) => (
+                  <Button
+                    key={traderId}
+                    variant="outline"
+                    className="border-slate-700 text-slate-300 hover:bg-slate-800 justify-start"
+                    onClick={() => navigate(`/trader/${traderId}`)}
+                  >
+                    {traderId}
+                  </Button>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {isEditing ? (
           // Edit Form
