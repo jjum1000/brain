@@ -13,8 +13,8 @@
 | Task | 파일명 | 우선순위 | 예상시간 | 상태 |
 |------|--------|---------|---------|------|
 | **001** | [TASK_001_SOLANA_WALLET_SETUP.md](TASK_001_SOLANA_WALLET_SETUP.md) | 🔴 Critical | 2-3주 | ✅ **완료** (3시간) |
-| **002** | [TASK_002_JUPITER_DEX_INTEGRATION.md](TASK_002_JUPITER_DEX_INTEGRATION.md) | 🔴 Critical | 2-3주 | ⏳ 준비 |
-| **003** | [TASK_003_SMART_CONTRACT_INTEGRATION.md](TASK_003_SMART_CONTRACT_INTEGRATION.md) | 🔴 Critical | 1-2주 | ⏳ 준비 |
+| **002** | [TASK_002_JUPITER_DEX_INTEGRATION.md](TASK_002_JUPITER_DEX_INTEGRATION.md) | 🔴 Critical | 2-3주 | ✅ **완료** |
+| **003** | [TASK_003_SMART_CONTRACT_INTEGRATION.md](TASK_003_SMART_CONTRACT_INTEGRATION.md) | 🔴 Critical | 1-2주 | ✅ **완료** (2시간) |
 
 ### High 우선순위 작업 (기능 개선)
 
@@ -216,20 +216,31 @@ VITE_SENTRY_DSN=your_sentry_dsn
 ### Phase 4 진행도
 ```
 ┌────────────────────────────────────────┐
-│ Solana 블록체인 연동    [███-----] 33% │ ✅ Task 001 완료
-│ 기능 개선              [--------] 0%  │
-│ 테스트                [--------] 0%  │
-│ 최적화 & 배포          [--------] 0%  │
+│ Solana 블록체인 연동    [██████---] 100% │ ✅ Task 001-003 완료
+│ 기능 개선              [--------] 0%   │
+│ 테스트                [--------] 0%   │
+│ 최적화 & 배포          [--------] 0%   │
 ├────────────────────────────────────────┤
-│ 전체 진행도            [▓-------] 7%  │
+│ 전체 진행도            [██------] 20%  │
 └────────────────────────────────────────┘
 ```
 
 ### 완료된 작업
-- ✅ **Task 001**: Solana 지갑 연동 (3시간 소요)
+- ✅ **Task 001**: Solana 지갑 연동 (3시간 소요, 2025-10-31)
   - Phantom & Solflare 지갑 지원
   - 완전한 TypeScript 타입 안정성
   - 에러 처리 및 UI 구현
+
+- ✅ **Task 002**: Jupiter DEX 통합 (완료)
+  - Jupiter API 클라이언트
+  - SOL/USDC 시세 조회 및 스왑
+  - 슬리피지 설정 및 가격 영향도 표시
+
+- ✅ **Task 003**: 스마트 컨트랙트 연동 (2시간 소요, 2025-10-31)
+  - Vault 입출금 트랜잭션 빌더
+  - useVaultContract 훅 구현
+  - 에러 처리 및 Firestore 연동
+  - 수동 Instruction 생성 (IDL 마이그레이션 준비)
 
 ---
 
@@ -259,8 +270,8 @@ VITE_SENTRY_DSN=your_sentry_dsn
 
 ### Pre-Launch
 - [x] Task 001: Solana 지갑 연동 완료 ✅ (2025-10-31 완료)
-- [ ] Task 002: Jupiter DEX 통합 완료
-- [ ] Task 003: 스마트 컨트랙트 연동 완료
+- [x] Task 002: Jupiter DEX 통합 완료 ✅
+- [x] Task 003: 스마트 컨트랙트 연동 완료 ✅ (2025-10-31 완료)
 
 ### Feature Complete
 - [ ] Task 004: YouTube 영상 통합
@@ -331,12 +342,13 @@ yoloseum-phase3-ui/
 
 **작성**: Claude AI
 **최종 검토**: 2025-10-31
-**상태**: 🟢 Task 001 완료 (3시간) | Task 002-015 준비 중
+**상태**: 🟢 Task 001-003 완료 (5시간) | Task 004-015 준비 중
 
 **진행 상황**:
-- Task 001: ✅ 완료 (Solana 지갑 연동)
-- Task 002-003: ⏳ 준비 (Jupiter DEX, 스마트 컨트랙트)
+- Task 001: ✅ 완료 (Solana 지갑 연동, 3시간)
+- Task 002: ✅ 완료 (Jupiter DEX 통합)
+- Task 003: ✅ 완료 (스마트 컨트랙트 연동, 2시간)
 - Task 004-008: ⏳ 준비 (기능 개선)
 - Task 009-015: ⏳ 준비 (테스트, 최적화)
 
-👉 **다음 단계**: [TASK_002_JUPITER_DEX_INTEGRATION.md](TASK_002_JUPITER_DEX_INTEGRATION.md) 시작 (예상 2-3주)
+👉 **다음 단계**: [TASK_004_YOUTUBE_VIDEO_INTEGRATION.md](TASK_004_YOUTUBE_VIDEO_INTEGRATION.md) 또는 Task 005-008 (기능 개선)
