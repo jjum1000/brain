@@ -21,8 +21,9 @@ interface UseTradeReturn {
  * Hook to fetch and listen to trader profiles from Firestore
  * Retrieves verified traders sorted by performance metrics
  * Real-time updates enabled using onSnapshot
+ * Optimized with default limit of 20 for better performance
  *
- * @param {number} [limitCount=50] - Number of traders to fetch (default: 50)
+ * @param {number} [limitCount=20] - Number of traders to fetch (default: 20 for performance)
  * @param {boolean} [verifiedOnly=true] - Only show verified traders
  * @returns {UseTradeReturn} Array of traders, loading state, and error
  *
@@ -40,7 +41,7 @@ interface UseTradeReturn {
  *   </div>
  * );
  */
-export const useTraders = (limitCount: number = 50, verifiedOnly: boolean = true): UseTradeReturn => {
+export const useTraders = (limitCount: number = 20, verifiedOnly: boolean = true): UseTradeReturn => {
   const [traders, setTraders] = useState<Trader[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);

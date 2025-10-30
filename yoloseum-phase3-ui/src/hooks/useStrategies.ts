@@ -29,9 +29,10 @@ interface StrategyFilters {
  * Hook to fetch and listen to trading strategies from Firestore
  * Supports filtering by trader, category, risk, and status
  * Real-time updates enabled using onSnapshot
+ * Optimized with default limit of 20 for better performance
  *
  * @param {StrategyFilters} [filters={}] - Filters for strategies
- * @param {number} [limitCount=50] - Number of strategies to fetch
+ * @param {number} [limitCount=20] - Number of strategies to fetch (default: 20 for performance)
  * @returns {UseStrategiesReturn} Array of strategies, loading state, and error
  *
  * @example
@@ -56,7 +57,7 @@ interface StrategyFilters {
  */
 export const useStrategies = (
   filters: StrategyFilters = {},
-  limitCount: number = 50
+  limitCount: number = 20
 ): UseStrategiesReturn => {
   const [strategies, setStrategies] = useState<Strategy[]>([]);
   const [loading, setLoading] = useState(true);

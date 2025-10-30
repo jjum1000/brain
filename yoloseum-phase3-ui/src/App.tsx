@@ -1,21 +1,38 @@
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import { Suspense, lazy } from 'react';
 import { AuthProvider } from '@/context/AuthContext';
 import { Toaster } from '@/components/ui/toaster';
 import { Layout } from '@/components/Layout';
-import { Dashboard } from '@/components/pages/Dashboard';
-import { Leaderboard } from '@/components/pages/Leaderboard';
-import { Traders } from '@/components/pages/Traders';
-import { TraderDetail } from '@/components/pages/TraderDetail';
-import { Profile } from '@/components/pages/Profile';
-import { Settings } from '@/components/pages/Settings';
-import { Strategies } from '@/components/pages/Strategies';
-import { StrategyDetail } from '@/components/pages/StrategyDetail';
-import { Portfolio } from '@/components/pages/Portfolio';
-import { NotFound } from '@/components/pages/NotFound';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ArrowRight, TrendingUp, Target, Shield } from 'lucide-react';
+import { CardGridSkeleton } from '@/components/common/Skeletons';
+
+// Lazy-loaded page components for code splitting
+const Dashboard = lazy(() => import('@/components/pages/Dashboard').then(m => ({ default: m.Dashboard })));
+const Leaderboard = lazy(() => import('@/components/pages/Leaderboard').then(m => ({ default: m.Leaderboard })));
+const Traders = lazy(() => import('@/components/pages/Traders').then(m => ({ default: m.Traders })));
+const TraderDetail = lazy(() => import('@/components/pages/TraderDetail').then(m => ({ default: m.TraderDetail })));
+const Profile = lazy(() => import('@/components/pages/Profile').then(m => ({ default: m.Profile })));
+const Settings = lazy(() => import('@/components/pages/Settings').then(m => ({ default: m.Settings })));
+const Strategies = lazy(() => import('@/components/pages/Strategies').then(m => ({ default: m.Strategies })));
+const StrategyDetail = lazy(() => import('@/components/pages/StrategyDetail').then(m => ({ default: m.StrategyDetail })));
+const Portfolio = lazy(() => import('@/components/pages/Portfolio').then(m => ({ default: m.Portfolio })));
+const NotFound = lazy(() => import('@/components/pages/NotFound').then(m => ({ default: m.NotFound })));
+
+/**
+ * Loading Fallback Component for Lazy Routes
+ */
+function RouteLoadingFallback() {
+  return (
+    <div className="w-full h-screen flex items-center justify-center">
+      <div className="w-full max-w-6xl px-4">
+        <CardGridSkeleton count={4} />
+      </div>
+    </div>
+  );
+}
 
 /**
  * Home Page Component
@@ -132,19 +149,21 @@ function AppContent() {
   return (
     <Router>
       <Layout>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/leaderboard" element={<Leaderboard />} />
-          <Route path="/traders" element={<Traders />} />
-          <Route path="/trader/:id" element={<TraderDetail />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/strategies" element={<Strategies />} />
-          <Route path="/strategy/:id" element={<StrategyDetail />} />
-          <Route path="/portfolio" element={<Portfolio />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <Suspense fallback={<RouteLoadingFallback />}>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/leaderboard" element={<Leaderboard />} />
+            <Route path="/traders" element={<Traders />} />
+            <Route path="/trader/:id" element={<TraderDetail />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/strategies" element={<Strategies />} />
+            <Route path="/strategy/:id" element={<StrategyDetail />} />
+            <Route path="/portfolio" element={<Portfolio />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
       </Layout>
     </Router>
   );
