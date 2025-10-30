@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import { Suspense, lazy } from 'react';
 import { AuthProvider } from '@/context/AuthContext';
+import { WalletProvider } from '@/context/WalletContext';
 import { Toaster } from '@/components/ui/toaster';
 import { Layout } from '@/components/Layout';
 import { Button } from '@/components/ui/button';
@@ -172,12 +173,15 @@ function AppContent() {
 /**
  * Main App Component
  * Wraps everything with AuthProvider for authentication context
+ * and WalletProvider for Solana wallet functionality
  */
 export default function App() {
   return (
     <AuthProvider>
-      <AppContent />
-      <Toaster />
+      <WalletProvider>
+        <AppContent />
+        <Toaster />
+      </WalletProvider>
     </AuthProvider>
   );
 }

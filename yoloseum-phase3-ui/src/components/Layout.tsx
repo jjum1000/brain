@@ -21,6 +21,7 @@ import { LoginDialog } from '@/components/auth/LoginDialog';
 import { SignupDialog } from '@/components/auth/SignupDialog';
 import { ForgotPasswordDialog } from '@/components/auth/ForgotPasswordDialog';
 import { Separator } from '@/components/ui/separator';
+import { WalletButton } from '@/components/wallet/WalletButton';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -100,6 +101,7 @@ export function Layout({ children }: LayoutProps) {
               <Loader2 className="h-4 w-4 animate-spin text-amber-500" />
             ) : user ? (
               <div className="hidden md:flex items-center gap-4">
+                <WalletButton />
                 <span className="text-sm text-slate-300">{user.displayName || user.email}</span>
                 <Button
                   onClick={() => signOut()}

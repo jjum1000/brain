@@ -1,6 +1,9 @@
 // Export all authentication types
 export type * from "./auth";
 
+// Export all wallet types
+export type * from "./wallet";
+
 // Export all Firestore types
 export type {
   // User types
