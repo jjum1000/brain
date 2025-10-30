@@ -73,7 +73,6 @@ export default defineConfig({
       'react',
       'react-dom',
       'react-router-dom',
-      'firebase',
       '@radix-ui/react-dialog',
       '@radix-ui/react-dropdown-menu',
       'lucide-react',
