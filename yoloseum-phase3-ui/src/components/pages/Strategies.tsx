@@ -22,12 +22,15 @@ import { TraderGridSkeleton } from '@/components/common/Skeletons';
  * Displays grid of trading strategies with filtering and search
  * Supports filtering by category, risk level, and status
  */
+type SortBy = 'popular' | 'tvl' | 'roi' | 'risk';
+
 export function Strategies() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [selectedRisk, setSelectedRisk] = useState<string>('');
   const [selectedStatus, setSelectedStatus] = useState<string>('');
+  const [sortBy, setSortBy] = useState<SortBy>('popular');
 
   const { strategies, loading, error } = useStrategies(
     {
@@ -47,6 +50,27 @@ export function Strategies() {
         strategy.traderName.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [strategies, searchQuery]);
+
+  // Sort strategies based on selected criteria
+  const sortedStrategies = useMemo(() => {
+    const sorted = [...filteredStrategies];
+
+    switch (sortBy) {
+      case 'tvl':
+        return sorted.sort((a, b) => (b.execution?.tvl || 0) - (a.execution?.tvl || 0));
+
+      case 'roi':
+        return sorted.sort((a, b) => (b.performance?.currentROI || 0) - (a.performance?.currentROI || 0));
+
+      case 'risk':
+        const riskOrder = { low: 1, medium: 2, high: 3 };
+        return sorted.sort((a, b) => riskOrder[a.risk] - riskOrder[b.risk]);
+
+      case 'popular':
+      default:
+        return sorted.sort((a, b) => (b.execution?.supporterCount || 0) - (a.execution?.supporterCount || 0));
+    }
+  }, [filteredStrategies, sortBy]);
 
   const categoryColor: Record<string, string> = {
     momentum: 'bg-blue-600',
@@ -141,7 +165,7 @@ export function Strategies() {
               </div>
 
               {/* Filter Row */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 {/* Category Filter */}
                 <Select value={selectedCategory} onValueChange={setSelectedCategory}>
                   <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-300">
@@ -182,13 +206,26 @@ export function Strategies() {
                     <SelectItem value="closed">Closed</SelectItem>
                   </SelectContent>
                 </Select>
+
+                {/* Sort By */}
+                <Select value={sortBy} onValueChange={(val) => setSortBy(val as SortBy)}>
+                  <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-300">
+                    <SelectValue placeholder="Sort By" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-slate-800 border-slate-700">
+                    <SelectItem value="popular">Most Popular</SelectItem>
+                    <SelectItem value="tvl">Highest TVL</SelectItem>
+                    <SelectItem value="roi">Best ROI</SelectItem>
+                    <SelectItem value="risk">Lowest Risk First</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </CardContent>
         </Card>
 
         {/* Strategies Grid */}
-        {filteredStrategies.length === 0 ? (
+        {sortedStrategies.length === 0 ? (
           <div className="text-center py-12">
             <AlertCircle className="h-12 w-12 text-slate-500 mx-auto mb-4 opacity-50" />
             <p className="text-slate-400 text-lg">
@@ -199,7 +236,7 @@ export function Strategies() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredStrategies.map((strategy: Strategy) => (
+            {sortedStrategies.map((strategy: Strategy) => (
               <Card
                 key={strategy.id}
                 className="bg-slate-800/50 border-slate-700 hover:border-amber-500/30 transition-colors cursor-pointer"
@@ -295,10 +332,10 @@ export function Strategies() {
         )}
 
         {/* Results Count */}
-        {filteredStrategies.length > 0 && (
+        {sortedStrategies.length > 0 && (
           <div className="mt-8 text-center">
             <p className="text-slate-400">
-              Showing {filteredStrategies.length} of {strategies.length} strategies
+              Showing {sortedStrategies.length} of {strategies.length} strategies
             </p>
           </div>
         )}
