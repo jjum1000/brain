@@ -20,12 +20,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
 import { useAuth } from '@/hooks/useAuth';
 import { useTransactions } from '@/hooks/useTransactions';
 import { usePortfolio } from '@/hooks/usePortfolio';
 import { FirebaseTimestamp } from '@/types/firestore';
 import type { Transaction } from '@/types/firestore';
 import { CardGridSkeleton, TableSkeleton } from '@/components/common/Skeletons';
+
+const PORTFOLIO_ITEMS_PER_PAGE = 10;
 
 /**
  * Portfolio Page Component
@@ -38,6 +48,7 @@ export function Portfolio() {
   const { transactions, loading: txLoading, error: txError } = useTransactions(100);
   const { investments, statistics, loading: portfolioLoading, error: portfolioError } = usePortfolio(100);
   const [filterType, setFilterType] = useState<string>('');
+  const [currentTransactionPage, setCurrentTransactionPage] = useState(1);
 
   // Unified loading and error states
   const loading = portfolioLoading || txLoading;
@@ -86,6 +97,17 @@ export function Portfolio() {
     }
     return transactions.filter((tx) => tx.type === filterType);
   }, [transactions, filterType]);
+
+  // Pagination for transactions
+  const transactionTotalPages = Math.ceil(filteredTransactions.length / PORTFOLIO_ITEMS_PER_PAGE);
+  const transactionStartIndex = (currentTransactionPage - 1) * PORTFOLIO_ITEMS_PER_PAGE;
+  const transactionEndIndex = transactionStartIndex + PORTFOLIO_ITEMS_PER_PAGE;
+  const paginatedTransactions = filteredTransactions.slice(transactionStartIndex, transactionEndIndex);
+
+  // Reset to first page if current page exceeds total pages
+  if (currentTransactionPage > transactionTotalPages && transactionTotalPages > 0) {
+    setCurrentTransactionPage(1);
+  }
 
   const typeColor: Record<string, string> = {
     deposit: 'bg-green-600',
@@ -388,7 +410,7 @@ export function Portfolio() {
               <div>
                 <CardTitle className="text-white">Transaction History</CardTitle>
                 <CardDescription className="text-slate-400">
-                  All deposits, withdrawals, and profit/loss transactions
+                  All deposits, withdrawals, and profit/loss transactions - Page {currentTransactionPage} of {transactionTotalPages || 1}
                 </CardDescription>
               </div>
 
@@ -428,7 +450,7 @@ export function Portfolio() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filteredTransactions.map((tx: Transaction) => (
+                    {paginatedTransactions.map((tx: Transaction) => (
                       <TableRow key={tx.id} className="border-slate-700 hover:bg-slate-800/30">
                         <TableCell>
                           <Badge className={`${typeColor[tx.type] || 'bg-slate-700'} hover:opacity-90 capitalize`}>
@@ -465,6 +487,45 @@ export function Portfolio() {
                     ))}
                   </TableBody>
                 </Table>
+
+                {/* Pagination */}
+                {transactionTotalPages > 1 && (
+                  <div className="mt-6 flex justify-center border-t border-slate-700 pt-6">
+                    <Pagination>
+                      <PaginationContent>
+                        {currentTransactionPage > 1 && (
+                          <PaginationItem>
+                            <PaginationPrevious
+                              onClick={() => setCurrentTransactionPage(prev => prev - 1)}
+                              className="cursor-pointer"
+                            />
+                          </PaginationItem>
+                        )}
+
+                        {Array.from({ length: transactionTotalPages }, (_, i) => i + 1).map(page => (
+                          <PaginationItem key={page}>
+                            <PaginationLink
+                              onClick={() => setCurrentTransactionPage(page)}
+                              isActive={page === currentTransactionPage}
+                              className="cursor-pointer"
+                            >
+                              {page}
+                            </PaginationLink>
+                          </PaginationItem>
+                        ))}
+
+                        {currentTransactionPage < transactionTotalPages && (
+                          <PaginationItem>
+                            <PaginationNext
+                              onClick={() => setCurrentTransactionPage(prev => prev + 1)}
+                              className="cursor-pointer"
+                            />
+                          </PaginationItem>
+                        )}
+                      </PaginationContent>
+                    </Pagination>
+                  </div>
+                )}
               </div>
             )}
           </CardContent>

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   DollarSign,
   TrendingUp,
@@ -20,15 +21,26 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import { useTransactions } from '@/hooks/useTransactions';
 import { useAuth } from '@/hooks/useAuth';
 import { CardGridSkeleton, TableSkeleton } from '@/components/common/Skeletons';
 
+const ITEMS_PER_PAGE = 10;
+
 export function Dashboard() {
   const { user: authUser } = useAuth();
   const { userProfile, loading: profileLoading, error: profileError } = useUserProfile();
   const { transactions, loading: transactionsLoading, error: transactionsError } = useTransactions();
+  const [currentPage, setCurrentPage] = useState(1);
 
   if (!authUser) {
     return (
@@ -56,6 +68,17 @@ export function Dashboard() {
   // Filter transactions by type
   const deposits = transactions.filter((tx) => tx.type === 'deposit');
   const withdrawals = transactions.filter((tx) => tx.type === 'withdraw');
+
+  // Pagination calculations
+  const totalPages = Math.ceil(transactions.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const paginatedTransactions = transactions.slice(startIndex, endIndex);
+
+  // Reset to first page if current page exceeds total pages
+  if (currentPage > totalPages && totalPages > 0) {
+    setCurrentPage(1);
+  }
 
   const statusIcons = {
     completed: <CheckCircle className="h-4 w-4 text-green-500" />,
@@ -159,7 +182,7 @@ export function Dashboard() {
               <CardHeader>
                 <CardTitle className="text-white">Recent Activity</CardTitle>
                 <CardDescription className="text-slate-400">
-                  Your latest transactions ({transactions.length} total)
+                  Your latest transactions ({transactions.length} total) - Page {currentPage} of {totalPages || 1}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -180,7 +203,7 @@ export function Dashboard() {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {transactions.map((tx) => (
+                        {paginatedTransactions.map((tx) => (
                           <TableRow key={tx.id} className="border-slate-700">
                             <TableCell>
                               <Badge
@@ -205,6 +228,45 @@ export function Dashboard() {
                         ))}
                       </TableBody>
                     </Table>
+
+                    {/* Pagination */}
+                    {totalPages > 1 && (
+                      <div className="mt-6 flex justify-center">
+                        <Pagination>
+                          <PaginationContent>
+                            {currentPage > 1 && (
+                              <PaginationItem>
+                                <PaginationPrevious
+                                  onClick={() => setCurrentPage(prev => prev - 1)}
+                                  className="cursor-pointer"
+                                />
+                              </PaginationItem>
+                            )}
+
+                            {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                              <PaginationItem key={page}>
+                                <PaginationLink
+                                  onClick={() => setCurrentPage(page)}
+                                  isActive={page === currentPage}
+                                  className="cursor-pointer"
+                                >
+                                  {page}
+                                </PaginationLink>
+                              </PaginationItem>
+                            ))}
+
+                            {currentPage < totalPages && (
+                              <PaginationItem>
+                                <PaginationNext
+                                  onClick={() => setCurrentPage(prev => prev + 1)}
+                                  className="cursor-pointer"
+                                />
+                              </PaginationItem>
+                            )}
+                          </PaginationContent>
+                        </Pagination>
+                      </div>
+                    )}
                   </div>
                 )}
               </CardContent>
