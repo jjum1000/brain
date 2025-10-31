@@ -18,6 +18,7 @@ import { db } from '@/lib/firebase';
 import { FirebaseTimestamp } from '@/types/firestore';
 import { DepositSection } from '@/components/deposit/DepositSection';
 import { YouTubePlayer } from '@/components/common/YouTubePlayer';
+import { QRCodeGenerator } from '@/components/common/QRCodeGenerator';
 import type { Strategy } from '@/types/firestore';
 
 /**
@@ -319,7 +320,8 @@ export function StrategyDetail() {
             <CardHeader>
               <CardTitle className="text-white">Smart Contract</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-6">
+              {/* Contract Address */}
               <div className="flex items-center justify-between bg-slate-900/50 p-4 rounded-lg">
                 <div className="flex-1">
                   <p className="text-xs text-slate-400 mb-1">Contract Address</p>
@@ -335,6 +337,15 @@ export function StrategyDetail() {
                 >
                   {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                 </Button>
+              </div>
+
+              {/* QR Code */}
+              <div className="flex justify-center border-t border-slate-700 pt-6">
+                <QRCodeGenerator
+                  value={strategy.execution.smartContractAddress}
+                  title="Scan to Deposit"
+                  size={200}
+                />
               </div>
             </CardContent>
           </Card>
