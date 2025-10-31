@@ -34,6 +34,8 @@ import { usePortfolio } from '@/hooks/usePortfolio';
 import { FirebaseTimestamp } from '@/types/firestore';
 import type { Transaction } from '@/types/firestore';
 import { CardGridSkeleton, TableSkeleton } from '@/components/common/Skeletons';
+import { FeeBreakdown } from '@/components/common/FeeBreakdown';
+import { calculatePerformanceFee } from '@/lib/feeCalculator';
 
 const PORTFOLIO_ITEMS_PER_PAGE = 10;
 
@@ -243,11 +245,20 @@ export function Portfolio() {
                 Total Return
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <p className={`text-3xl font-bold ${portfolioStats.totalReturn >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                ${portfolioStats.totalReturn.toLocaleString('en-US', { maximumFractionDigits: 2 })}
-              </p>
-              <p className="text-xs text-slate-500 mt-2">ROI: {portfolioStats.roi}%</p>
+            <CardContent className="space-y-6">
+              <div>
+                <p className={`text-3xl font-bold ${portfolioStats.totalReturn >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                  ${portfolioStats.totalReturn.toLocaleString('en-US', { maximumFractionDigits: 2 })}
+                </p>
+                <p className="text-xs text-slate-500 mt-2">ROI: {portfolioStats.roi}%</p>
+              </div>
+
+              {/* Fee Breakdown */}
+              {portfolioStats.totalProfit > 0 && (
+                <div className="border-t border-slate-700 pt-6">
+                  <FeeBreakdown profit={portfolioStats.totalProfit} feePercentage={0.2} showLabel={false} />
+                </div>
+              )}
             </CardContent>
           </Card>
 

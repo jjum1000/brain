@@ -33,6 +33,7 @@ import { useUserProfile } from '@/hooks/useUserProfile';
 import { useTransactions } from '@/hooks/useTransactions';
 import { useAuth } from '@/hooks/useAuth';
 import { CardGridSkeleton, TableSkeleton } from '@/components/common/Skeletons';
+import { FeeBreakdown } from '@/components/common/FeeBreakdown';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -138,14 +139,23 @@ export function Dashboard() {
                   <CardTitle className="text-sm font-medium text-slate-300">Total Earnings</CardTitle>
                   <TrendingUp className="h-4 w-4 text-amber-500" />
                 </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold text-white">
-                    ${typeof totalEarnings === 'number' ? totalEarnings.toLocaleString() : '0'}
+                <CardContent className="space-y-4">
+                  <div>
+                    <div className="text-2xl font-bold text-white">
+                      ${typeof totalEarnings === 'number' ? totalEarnings.toLocaleString() : '0'}
+                    </div>
+                    <div className="flex items-center gap-1 text-xs text-green-500 mt-1">
+                      <ArrowUpRight className="h-3 w-3" />
+                      <span>From supported strategies</span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-1 text-xs text-green-500 mt-1">
-                    <ArrowUpRight className="h-3 w-3" />
-                    <span>From supported strategies</span>
-                  </div>
+
+                  {/* Fee Breakdown */}
+                  {typeof totalEarnings === 'number' && totalEarnings > 0 && (
+                    <div className="border-t border-slate-700 pt-4 -mx-6 px-6">
+                      <FeeBreakdown profit={totalEarnings} feePercentage={0.2} showLabel={false} />
+                    </div>
+                  )}
                 </CardContent>
               </Card>
 
