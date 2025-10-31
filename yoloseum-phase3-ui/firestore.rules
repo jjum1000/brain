@@ -1,0 +1,187 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+             request.auth.token.role == 'admin';
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() &&
+             request.auth.uid == userId;
+    }
+
+    function isTrader(traderId) {
+      return isAuthenticated() &&
+             request.auth.uid == traderId;
+    }
+
+    // ========== Users Collection ==========
+    // User profiles - only users can read/write their own data
+    match /users/{userId} {
+      // Read own profile
+      allow read: if isOwner(userId);
+
+      // Create own profile on signup
+      allow create: if isAuthenticated() &&
+                       request.resource.data.uid == request.auth.uid &&
+                       request.resource.data.createdAt == request.time;
+
+      // Update own profile
+      allow update: if isOwner(userId) &&
+                       !('uid' in request.resource.data.delta) && // Can't change uid
+                       !('createdAt' in request.resource.data.delta); // Can't change createdAt
+
+      // Delete own account
+      allow delete: if isOwner(userId);
+    }
+
+    // ========== Strategies Collection ==========
+    // Trading strategies - public read, admin write
+    match /strategies/{strategyId} {
+      // Everyone can read strategies
+      allow read: if true;
+
+      // Only admins can create
+      allow create: if isAdmin();
+
+      // Only admins can update
+      allow update: if isAdmin();
+
+      // Only admins can delete
+      allow delete: if isAdmin();
+
+      // Subcollection: Strategy details/metadata
+      match /details/{document=**} {
+        allow read: if true;
+        allow write: if isAdmin();
+      }
+    }
+
+    // ========== Supporters Collection ==========
+    // User investments in strategies - each user's investments
+    match /supporters/{userId} {
+      // User can read own supporter data
+      allow read: if isOwner(userId);
+
+      // Only user can create own supporter record
+      allow create: if isOwner(userId) &&
+                       request.resource.data.uid == request.auth.uid;
+
+      // Only user can update own supporter data
+      allow update: if isOwner(userId) &&
+                       !('uid' in request.resource.data.delta);
+
+      // Only user can delete own supporter data
+      allow delete: if isOwner(userId);
+
+      // Investment transactions subcollection
+      match /investments/{investmentId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) &&
+                         request.resource.data.userId == request.auth.uid;
+        allow update: if isOwner(userId) &&
+                         !('userId' in request.resource.data.delta);
+        allow delete: if isOwner(userId);
+      }
+    }
+
+    // ========== Transactions Collection ==========
+    // User transaction records - each user's transactions
+    match /transactions/{userId}/{transactionId} {
+      // User can read own transactions
+      allow read: if isOwner(userId);
+
+      // Only user can create own transaction records
+      allow create: if isOwner(userId) &&
+                       request.resource.data.userId == request.auth.uid &&
+                       request.resource.data.timestamp == request.time;
+
+      // Only user can update (for status updates)
+      allow update: if isOwner(userId) &&
+                       !('userId' in request.resource.data.delta) && // Can't change userId
+                       !('timestamp' in request.resource.data.delta); // Can't change timestamp
+
+      // Only user can delete
+      allow delete: if isOwner(userId);
+    }
+
+    // ========== Traders Collection ==========
+    // Public trader profiles
+    match /traders/{traderId} {
+      // Everyone can read trader profiles
+      allow read: if true;
+
+      // Trader can create own profile
+      allow create: if isTrader(traderId) &&
+                       request.resource.data.traderId == request.auth.uid &&
+                       request.resource.data.createdAt == request.time;
+
+      // Trader can update own profile
+      allow update: if isTrader(traderId) &&
+                       !('traderId' in request.resource.data.delta) && // Can't change traderId
+                       !('createdAt' in request.resource.data.delta); // Can't change createdAt
+
+      // Only admins can delete trader profiles
+      allow delete: if isAdmin();
+
+      // Trader strategies subcollection
+      match /strategies/{strategyId} {
+        allow read: if true; // Public
+        allow write: if isTrader(traderId);
+      }
+
+      // Trader followers subcollection
+      match /followers/{followerId} {
+        allow read: if true; // Public
+        allow create: if isAuthenticated() &&
+                         request.resource.data.followerId == request.auth.uid;
+        allow delete: if isAuthenticated() &&
+                         request.auth.uid == request.resource.data.followerId;
+      }
+    }
+
+    // ========== Leaderboard Collection ==========
+    // Public leaderboard rankings
+    match /leaderboard/{document=**} {
+      // Everyone can read leaderboard
+      allow read: if true;
+
+      // Only admins can write (create/update entries)
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ========== Portfolios Collection (Optional) ==========
+    // User portfolio snapshots
+    match /portfolios/{userId} {
+      // User can read own portfolio
+      allow read: if isOwner(userId);
+
+      // Only user can write portfolio data
+      allow create: if isOwner(userId) &&
+                       request.resource.data.userId == request.auth.uid;
+      allow update: if isOwner(userId) &&
+                       !('userId' in request.resource.data.delta);
+      allow delete: if isOwner(userId);
+
+      // Portfolio history subcollection
+      match /history/{document=**} {
+        allow read: if isOwner(userId);
+        allow write: if isOwner(userId);
+      }
+    }
+
+    // ========== Deny All By Default ==========
+    // Any unmatched path is denied
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
