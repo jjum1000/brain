@@ -1,5 +1,6 @@
-import { FC, useRef } from 'react';
-import QRCode from 'qrcode.react';
+import type { FC } from 'react';
+import { useRef } from 'react';
+import { QRCodeSVG } from 'qrcode.react';
 import { Button } from '@/components/ui/button';
 import { Download } from 'lucide-react';
 
@@ -37,7 +38,7 @@ export const QRCodeGenerator: FC<QRCodeGeneratorProps> = ({
     <div className="flex flex-col items-center gap-4">
       {/* QR Code Display */}
       <div ref={qrRef} className="p-4 bg-white rounded-lg">
-        <QRCode value={value} size={size} level={level} includeMargin={true} />
+        <QRCodeSVG value={value} size={size} level={level} includeMargin={true} />
       </div>
 
       {/* Title */}

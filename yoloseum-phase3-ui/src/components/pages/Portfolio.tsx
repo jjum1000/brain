@@ -35,7 +35,6 @@ import { FirebaseTimestamp } from '@/types/firestore';
 import type { Transaction } from '@/types/firestore';
 import { CardGridSkeleton, TableSkeleton } from '@/components/common/Skeletons';
 import { FeeBreakdown } from '@/components/common/FeeBreakdown';
-import { calculatePerformanceFee } from '@/lib/feeCalculator';
 
 const PORTFOLIO_ITEMS_PER_PAGE = 10;
 

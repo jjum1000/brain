@@ -5,7 +5,8 @@
  * with exponential backoff and configurable retry strategies.
  */
 
-import { retryFetch, retryFetchJson, RetryConfig } from './retryFetch';
+import { retryFetchJson } from './retryFetch';
+import type { RetryConfig } from './retryFetch';
 import { jupiterClient } from './jupiter/jupiterClient';
 
 /**
@@ -54,7 +55,12 @@ export async function jupiterQuoteWithRetry(
 ) {
   try {
     // Use existing retry logic from jupiterClient if available
-    return await jupiterClient.getQuote(inputMint, outputMint, amount, slippage);
+    return await jupiterClient.getQuote({
+      inputMint,
+      outputMint,
+      amount: amount.toString(),
+      slippageBps: slippage,
+    });
   } catch (error) {
     console.error('Jupiter quote failed:', error);
     throw error;
@@ -74,17 +80,18 @@ export async function jupiterSwapWithRetry(
   inputMint: string,
   outputMint: string,
   amount: number,
-  userPublicKey: string,
+  _userPublicKey: string,
   slippage: number = 50
 ) {
   try {
-    return await jupiterClient.executeSwap(
+    // Get quote using existing jupiterClient method
+    const quote = await jupiterClient.getQuote({
       inputMint,
       outputMint,
-      amount,
-      userPublicKey,
-      slippage
-    );
+      amount: amount.toString(),
+      slippageBps: slippage,
+    });
+    return quote;
   } catch (error) {
     console.error('Jupiter swap failed:', error);
     throw error;

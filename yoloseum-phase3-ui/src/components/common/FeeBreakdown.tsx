@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import type { FC } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { calculatePerformanceFee } from '@/lib/feeCalculator';
 

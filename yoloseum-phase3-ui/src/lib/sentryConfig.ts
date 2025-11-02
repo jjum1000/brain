@@ -19,7 +19,10 @@ export function initSentry(): void {
     return;
   }
 
-  // Import Sentry dynamically to avoid bundling in development
+  // Sentry initialization disabled for now
+  // To enable: npm install @sentry/react
+  // Then uncomment the code below
+  /*
   if (import.meta.env.MODE === 'production') {
     import('@sentry/react').then(Sentry => {
       Sentry.init({
@@ -31,67 +34,45 @@ export function initSentry(): void {
             blockAllMedia: true,
           }),
         ],
-        // Performance monitoring
-        tracesSampleRate: 0.1, // 10% of transactions in production
-        // Session replay
-        replaysSessionSampleRate: 0.1, // 10% of sessions
-        replaysOnErrorSampleRate: 1.0, // Capture all sessions with errors
+        tracesSampleRate: 0.1,
+        replaysSessionSampleRate: 0.1,
+        replaysOnErrorSampleRate: 1.0,
       });
-
       console.log('Sentry initialized for error tracking');
     }).catch(err => {
       console.error('Failed to initialize Sentry:', err);
     });
   }
+  */
 }
 
 /**
  * Capture exception to Sentry
  * @param error Error to capture
- * @param context Additional context
+ * @param _context Additional context
  */
 export function captureException(
   error: any,
-  context?: Record<string, any>
+  _context?: Record<string, any>
 ): void {
-  if (import.meta.env.MODE === 'production') {
-    import('@sentry/react').then(Sentry => {
-      if (context) {
-        Sentry.captureException(error, { contexts: { app: context } });
-      } else {
-        Sentry.captureException(error);
-      }
-    }).catch(err => {
-      console.error('Failed to capture exception:', err);
-    });
-  }
+  // Sentry disabled for now - to enable install @sentry/react
+  console.error('Error captured:', error);
 }
 
 /**
  * Capture message to Sentry
  * @param message Message to capture
  * @param level Log level
- * @param context Additional context
+ * @param _context Additional context
  */
 export function captureMessage(
   message: string,
   level: 'fatal' | 'error' | 'warning' | 'info' | 'debug' = 'info',
-  context?: Record<string, any>
+  _context?: Record<string, any>
 ): void {
-  if (import.meta.env.MODE === 'production') {
-    import('@sentry/react').then(Sentry => {
-      if (context) {
-        Sentry.captureMessage(message, {
-          level,
-          contexts: { app: context },
-        });
-      } else {
-        Sentry.captureMessage(message, level);
-      }
-    }).catch(err => {
-      console.error('Failed to capture message:', err);
-    });
-  }
+  // Sentry disabled for now - to enable install @sentry/react
+  const logLevel = level === 'error' || level === 'fatal' ? 'error' : 'log';
+  console[logLevel as 'error' | 'log'](message);
 }
 
 /**
@@ -105,30 +86,16 @@ export function setUserContext(
   email?: string,
   username?: string
 ): void {
-  if (import.meta.env.MODE === 'production') {
-    import('@sentry/react').then(Sentry => {
-      Sentry.setUser({
-        id: userId,
-        email: email,
-        username: username,
-      });
-    }).catch(err => {
-      console.error('Failed to set user context:', err);
-    });
-  }
+  // Sentry disabled for now - to enable install @sentry/react
+  console.debug('User context:', { userId, email, username });
 }
 
 /**
  * Clear user context from Sentry
  */
 export function clearUserContext(): void {
-  if (import.meta.env.MODE === 'production') {
-    import('@sentry/react').then(Sentry => {
-      Sentry.setUser(null);
-    }).catch(err => {
-      console.error('Failed to clear user context:', err);
-    });
-  }
+  // Sentry disabled for now - to enable install @sentry/react
+  console.debug('User context cleared');
 }
 
 /**
@@ -142,16 +109,6 @@ export function addBreadcrumb(
   data?: Record<string, any>,
   level: 'fatal' | 'error' | 'warning' | 'info' | 'debug' = 'info'
 ): void {
-  if (import.meta.env.MODE === 'production') {
-    import('@sentry/react').then(Sentry => {
-      Sentry.addBreadcrumb({
-        message,
-        data,
-        level,
-        timestamp: Date.now() / 1000,
-      });
-    }).catch(err => {
-      console.error('Failed to add breadcrumb:', err);
-    });
-  }
+  // Sentry disabled for now - to enable install @sentry/react
+  console.debug('Breadcrumb:', { message, data, level });
 }
