@@ -1,20 +1,29 @@
-# 🚀 YOLOSEUM Phase 4 - 시작 가이드
+# 🚀 YOLOSEUM Phase 2-5 - 진행 상황
 
 **작성일**: 2025-10-31
-**마지막 업데이트**: 2025-11-01
-**상태**: ✅ PHASE 4 완료 (100% 달성)
-**프로젝트**: yoloseum-phase3-ui
-**총 작업**: 15개 (10-15주 예상 → 14시간 실제 완료)
+**마지막 업데이트**: 2025-11-02
+**상태**: ✅ PHASE 2 완료 (스마트 컨트랙트) | ✅ PHASE 4 완료 (프론트엔드) → Phase 3 준비 중
+**프로젝트**: yoloseum-phase3-ui + smart-contracts-vault-program
+**총 작업**: 15개 (Phase 4) + Phase 2 (스마트 컨트랙트)
 
 ---
 
+## 📚 필독 문서
+
+| 문서 | 설명 | 읽는 시간 |
+|------|------|----------|
+| **[ENVIRONMENT_CONFIGURATION.md](../00_Architecture/ENVIRONMENT_CONFIGURATION.md)** | 현재 개발 환경 설정 상세 (도구, 경로, 명령어) | 10분 |
+| **[PROJECT_STRUCTURE_CLARIFICATION.md](../00_Architecture/PROJECT_STRUCTURE_CLARIFICATION.md)** | 전체 프로젝트 구조 및 역할 | 15분 |
+| **ENVIRONMENT_STATUS.md** | 설치된 도구 상태 | 5분 |
+
 ## 📌 빠른 시작
 
-### 1단계: 문서 읽기 (5분)
+### 1단계: 문서 읽기 (30분)
 ```
-1. 이 파일 읽기 ✓
-2. PHASE4_COMPLETE_TODO_LIST.md 확인
-3. Docs/03_Task/README.md 스캔
+1. ✅ ENVIRONMENT_CONFIGURATION.md 읽기
+2. ✅ PROJECT_STRUCTURE_CLARIFICATION.md 읽기
+3. ✅ 이 파일 읽기 (00_START_HERE.md)
+4. ✅ Docs/03_Task/README.md 스캔
 ```
 
 ### 2단계: 환경 준비 (10분)
